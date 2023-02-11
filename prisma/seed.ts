@@ -2,14 +2,14 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 const main = async () => {
-    const user1 = await prisma.user.create({
+    const kokhayas = await prisma.user.create({
         data: {
             email: '1234.884.koki@gmail.com',
-            name: 'user1',
+            name: 'kokhayas',
         }
     })
-
-    const book1 = await prisma.book.create({
+// https://www.googleapis.com/books/v1/volumes?q=Go%E8%A8%80%E8%AA%9E%E3%81%A7%E4%BD%9C%E3%82%8B%E3%82%A4%E3%83%B3%E3%82%BF%E3%83%97%E3%83%AA%E3%82%BF
+    const algo_book = await prisma.book.create({
         data: {
             title: 'プログラミングコンテスト攻略のためのアルゴリズムとデータ構造',
             authors: ['渡部有隆'],
@@ -23,7 +23,7 @@ const main = async () => {
                     {
                         user: {
                             connect: {
-                                id: user1.id,
+                                id: kokhayas.id,
                             }
                         }
                     }
@@ -33,27 +33,23 @@ const main = async () => {
     })
 
 
-    // const user2 = await prisma.user.findUnique({
-    //     where: {
-    //         email: '1234hakataramen@g.ecc.u-tokyo.ac.jp'
-    //     }
-    // })
-    const user2 = await prisma.user.upsert({
+    const hakataramen = await prisma.user.upsert({
         where: {
             email: '1234hakataramen@g.ecc.u-tokyo.ac.jp'
         },
         update: {},
         create: {
             email: '1234hakataramen@g.ecc.u-tokyo.ac.jp',
-            name: 'user2',
+            name: 'hakataramen',
         }
     })
 
-    if (!user2) {
+
+    if (!hakataramen) {
         throw new Error('user not found')
     }
 
-    const book2 = await prisma.book.create({
+    const golang_book = await prisma.book.create({
         data: {
             title: 'Go言語による並行処理',
             authors: ['Trosten Ball'],
@@ -68,7 +64,7 @@ const main = async () => {
                     {
                         user: {
                             connect: {
-                                id: user2.id,
+                                id: hakataramen.id,
                             }
                         }
                     }
@@ -78,17 +74,42 @@ const main = async () => {
     })
 
 
+    const deeplearning_book = await prisma.book.create({
+        data: {
+            title: 'ゼロから作るDeep Learning 4',
+            authors: ['斎藤 康毅'],
+            publisher: 'オライリージャパン',
+            language: 'ja',
+            description: '本書は、ディープラーニングの基礎をゼロから学ぶことができる、オライリー・ジャパンの人気シリーズ「ゼロから作る」の第4弾です。本書では、ディープラーニングの基礎をゼロから学ぶことができます。本書では、ディープラーニングの基礎をゼロから学ぶことができます。',
+            thumbnail: 'https://www.oreilly.co.jp/books/images/picture_large978-4-87311-975-5.jpeg',
+            ISBN_13: '978-4-87311-975-5',
+            users: {
+                create: [
+                    { 
+                        user: {
+                            connect: {
+                                id: hakataramen.id,
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    })
+    
+
+
 
     const friendshipmentRequest1 = await prisma.friendshipRequest.create({
         data: {
             requester: {
                 connect: {
-                    id: user2.id,
+                    id: hakataramen.id,
                 }
             },
             addressee: {
                 connect: {
-                    id: user1.id,
+                    id: kokhayas.id,
                 }
             },
             status: 'requested'
@@ -100,43 +121,88 @@ const main = async () => {
         data: {
             requester: {
                 connect: {
-                    id: user1.id,
+                    id: hakataramen.id,
                 }
             },
             addressee: {
                 connect: {
-                    id: user2.id,
+                    id: kokhayas.id,
                 }
             },
             status: 'accepted'
         }
     })
 
+    const kokhayas_algo_book = await prisma.userBooks.findFirst({
+        where: {
+            user: {
+                id: kokhayas.id
+            },
+            book: {
+                id: algo_book.id
+            }
+        }
+    })
+
+    if (!kokhayas_algo_book) {
+        throw new Error('userBook not found')
+    }
+
+    const userBookFav1 = await prisma.userBookFav.create({
+        data: {
+            user: {
+                connect: {
+                    id: kokhayas.id,
+                }
+            },
+            userBook: {
+                connect: {
+                    id: kokhayas_algo_book.id,
+                }
+            }
+        }
+    })
+
+    const bookFav1 = await prisma.bookFav.create({
+        data: {
+            user: {
+                connect: {
+                    id: hakataramen.id,
+                }
+            },
+            book: {
+                connect: {
+                    id: algo_book.id,
+                }
+            }
+        }
+    })
 
 
     const exchangeRequest1 = await prisma.exchangeRequest.create({
         data: {
+            requester: {
+                connect: {
+                    id: hakataramen.id,
+                }
+            },
+            addressee: {
+                connect: {
+                    id: kokhayas.id,
+                }
+            },
             requester_books: {
                 connect: {
-                    id: book1.id,
+                    id: golang_book.id,
                 }
             },
             addressee_books: {
                 connect: {
-                    id: book2.id,
+                    id: algo_book.id,
                 }
             },
 
-            addressee: {
-                connect: {
-                    id: user2.id,
-                }
-            },
-            requester: {
-                connect: {
-                    id: user1.id,
-                }
-            },
+
             status: 'requested'
         }
     })
@@ -144,29 +210,136 @@ const main = async () => {
 
     const exchangeRequest2 = await prisma.exchangeRequest.create({
         data: {
-            requester_books: {
+            requester: {
                 connect: {
-                    id: book2.id,
-                }
-            },
-            addressee_books: {
-                connect: {
-                    id: book1.id,
+                    id: kokhayas.id,
                 }
             },
             addressee: {
                 connect: {
-                    id: user2.id,
+                    id: hakataramen.id,
                 }
             },
+            requester_books: {
+                connect: [
+                    {id: algo_book.id},
+                ]
+            },
+            addressee_books: {
+                connect: [
+                    {id: golang_book.id},
+                    {id: deeplearning_book.id},
+                ]
+            },
+            status: 'requested'
+        }
+    })
+    const exchangeRequest3 = await prisma.exchangeRequest.create({
+        data: {
             requester: {
                 connect: {
-                    id: user1.id,
+                    id: kokhayas.id,
                 }
             },
+            addressee: {
+                connect: {
+                    id: hakataramen.id,
+                }
+            },
+            requester_books: {
+                connect: [
+                    {id: algo_book.id},
+                ]
+            },
+            addressee_books: {
+                connect: [
+                    {id: golang_book.id},
+                    {id: deeplearning_book.id}
+                ]
+            },
             status: 'accepted'
+        }
+    })
 
+    const room1 = await prisma.room.create({
+        data: {
+            name: 'room1',
+        }
+    })
 
+    const roomMember1 = await prisma.roomMembers.create({
+        data: {
+            room: {
+                connect: {
+                    id: room1.id,
+                }
+            },
+            user: {
+                connect: {
+                    id: hakataramen.id,
+                }
+            },            
+        }
+    })
+
+    const roomMember2 = await prisma.roomMembers.create({
+        data: {
+            room: {
+                connect: {
+                    id: room1.id,
+                }
+            },
+            user: {
+                connect: {
+                    id: kokhayas.id,
+                }   
+            },
+        }
+    })
+
+    const privateMessage1 = await prisma.privateMessage.create({
+        data: {
+            room: {
+                connect: {
+                    id: room1.id,
+                }
+            },
+            sender: {
+                connect: {
+                    id: hakataramen.id,
+                }
+            },
+            content: 'hello kokhayas.',
+        }
+    })
+
+    const privateMessage2 = await prisma.privateMessage.create({
+        data: {
+            room: {
+                connect: {
+                    id: room1.id,
+                }
+            },
+            sender: {
+                connect: {
+                    id: kokhayas.id,
+                }
+            },
+            content: 'what\'s up? hakataramen?',
+        }
+    })
+
+    const publicMessage1 = await prisma.publicMessage.create({
+        data: {
+            sender: {
+                connect: {
+                    id: hakataramen.id,
+                }
+            },
+            content: 'hello world',
+        }
+    })
+            
 
 }
 
