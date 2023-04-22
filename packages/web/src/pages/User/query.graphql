@@ -1,0 +1,15 @@
+query AllUsers {
+  allUsers {
+    id
+    name
+    email
+  }
+}
+
+mutation SignupUser($userCreateInput: UserCreateInput!) {
+  signupUser(data: $userCreateInput) {
+    id
+    name
+    email
+  }
+}
