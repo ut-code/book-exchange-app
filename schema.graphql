@@ -58,6 +58,7 @@ input UserCreateInput {
   email: String!
   name: String
   posts: [PostCreateInput!]
+  password: String!
 }
 
 input PostCreateInput {

@@ -112,6 +112,7 @@ export type User = {
 export type UserCreateInput = {
   email: Scalars['String'];
   name?: InputMaybe<Scalars['String']>;
+  password: Scalars['String'];
   posts?: InputMaybe<Array<PostCreateInput>>;
 };
 

@@ -10,7 +10,7 @@ import {
   InputType,
   Field,
 } from '@nestjs/graphql'
-import { Inject } from '@nestjs/common'
+import { Inject, UseGuards } from '@nestjs/common'
 import { Post } from './post'
 import { User } from './user'
 import { PrismaService } from './prisma.service'
@@ -35,6 +35,9 @@ class UserCreateInput {
 
   @Field((type) => [PostCreateInput], { nullable: true })
   posts: [PostCreateInput]
+
+  @Field()
+  password: string
 }
 
 @Resolver(User)
@@ -65,6 +68,7 @@ export class UserResolver {
       data: {
         email: data.email,
         name: data.name,
+        password: data.password,
         posts: {
           create: postData,
         },
