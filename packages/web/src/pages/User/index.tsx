@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useAllUsersQuery, useSignupUserMutation } from './query.generated';
 
-export function UserPage() {
+export default function UserPage() {
   const { data } = useAllUsersQuery();
   const [signupUser, { error: signupError }] = useSignupUserMutation();
 
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
+  const [password, setPassword] = useState('');
 
   const handleSignup = async () => {
     try {
@@ -15,6 +16,7 @@ export function UserPage() {
           userCreateInput: {
             email,
             name,
+            password,
           },
         },
       });
@@ -38,6 +40,12 @@ export function UserPage() {
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder='password'
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
         />
         <button onClick={handleSignup}>Signup</button>
         {signupError && <div>Error: {signupError.message}</div>}
