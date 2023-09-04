@@ -3,14 +3,14 @@
 # ------------------------------------------------------
 
 type User {
-  id: Int!
-  email: String!
-  name: String
-  posts: [Post!]
+  id: ID!
+  username: String!
+  password: String!
+  posts: [Post!]!
 }
 
 type Post {
-  id: Int!
+  id: ID!
   createdAt: Timestamp!
   updatedAt: Timestamp!
   title: String!
@@ -25,39 +25,29 @@ type Post {
 """
 scalar Timestamp
 
+type AuthResponse {
+  accessToken: String!
+}
+
 type Query {
-  allUsers: [User!]
-  draftsByUser(userUniqueInput: UserUniqueInput!): [Post!]
-  postById(id: Float!): Post
-  feed(searchString: String, skip: Float, take: Float, orderBy: PostOrderByUpdatedAtInput): [Post!]!
-}
-
-input UserUniqueInput {
-  id: Float
-  email: String
-}
-
-input PostOrderByUpdatedAtInput {
-  updatedAt: SortOrder!
-}
-
-enum SortOrder {
-  asc
-  desc
+  users: [User!]!
+  draftsByUser(id: String!): [Post!]!
+  post(id: String!): Post!
+  posts: [Post!]!
+  allPosts: [Post!]!
 }
 
 type Mutation {
-  signupUser(data: UserCreateInput!): User!
-  createDraft(data: PostCreateInput!, authorEmail: String!): Post!
-  incrementPostViewCount(id: Float!): Post!
-  togglePublishPost(id: Float!): Post
-  deletePost(id: Float!): Post
+  signUp(input: UserInput!): User!
+  signIn(input: UserInput!): AuthResponse!
+  createPost(data: PostCreateInput!): Post!
+  incrementPostViewCount(id: String!): Post!
+  togglePublishPost(id: String!): Post!
+  deletePost(id: String!): Post!
 }
 
-input UserCreateInput {
-  email: String!
-  name: String
-  posts: [PostCreateInput!]
+input UserInput {
+  username: String!
   password: String!
 }
 

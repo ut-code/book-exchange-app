@@ -1,10 +1,10 @@
-import { Module } from '@nestjs/common'
-import { GraphQLModule } from '@nestjs/graphql'
-import { PrismaService } from './prisma.service'
-import { PostResolver } from './resolvers.post'
-import { UserResolver } from './resolvers.user'
-import { join } from 'path'
-import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'
+import { Module } from '@nestjs/common';
+import { GraphQLModule } from '@nestjs/graphql';
+import { join } from 'path';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { PrismaModule } from './services/prisma/prisma.module';
+import { ResolversModule } from './resolvers/resolvers.module';
+import { AuthModule } from './services/auth/auth.module';
 
 @Module({
   imports: [
@@ -13,8 +13,11 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo'
       autoSchemaFile: join(process.cwd(), '../../schema.graphql'),
       buildSchemaOptions: { dateScalarMode: 'timestamp' },
     }),
+    PrismaModule,
+    ResolversModule,
+    AuthModule,
   ],
   controllers: [],
-  providers: [PrismaService, UserResolver, PostResolver],
+  providers: [],
 })
 export class AppModule {}

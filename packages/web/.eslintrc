@@ -1,0 +1,29 @@
+{
+  "ignorePatterns": ["dist/*","*.generated.ts"],
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx", "*.js"],
+      "parserOptions": {
+        "project": "tsconfig.json"
+      },
+      "rules": {
+        "no-underscore-dangle": "off",
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "prefer-destructuring": "off",
+        "react/react-in-jsx-scope": "off",
+        "react/jsx-props-no-spreading": "off",
+        "react/destructuring-assignment": "off",
+        "react/require-default-props": "off",
+        "react/function-component-definition": "off",
+        "react/no-unstable-nested-components": "off",
+        "react/prop-types": "off"
+      }
+    },
+    {
+      "files": ["*.graphql"],
+      "parserOptions": {
+        "operations": "packages/web/src/**/*.graphql"
+      }
+    }
+  ]
+}

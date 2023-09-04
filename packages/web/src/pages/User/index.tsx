@@ -43,7 +43,7 @@ export default function UserPage() {
         />
         <input
           type="password"
-          placeholder='password'
+          placeholder="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />

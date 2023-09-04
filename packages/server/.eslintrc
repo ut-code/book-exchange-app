@@ -1,0 +1,16 @@
+{
+  "parserOptions": {
+    "project": "tsconfig.json"
+  },
+  "ignorePatterns": ["dist/*", "prisma/*", "node_modules/*"],
+  "rules": {
+    "class-methods-use-this": "off",
+    "import/no-extraneous-dependencies": ["error", {
+      "devDependencies": ["**/*.spec.ts", "**/test/*"],
+      "optionalDependencies": false
+    }],
+    "no-useless-constructor": "off",
+    "no-empty-function": "off",
+    "max-classes-per-file": "off"
+  }
+}
