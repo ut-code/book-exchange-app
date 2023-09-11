@@ -6,36 +6,66 @@ import {
   ResolveField,
   Context,
   Parent,
+  Info,
 } from '@nestjs/graphql';
-import { Inject } from '@nestjs/common';
+import { Inject, UseGuards } from '@nestjs/common';
 import { User } from 'src/models/user';
 import { Post } from 'src/models/post';
 import { PrismaService } from 'src/services/prisma/prisma.service';
 import { PickPrimitive } from 'src/common/primitive';
-
+import {
+  getRequestedRelations,
+  mapRelationsToPrismaInclude,
+} from 'src/common/graphql';
+import { GraphQLResolveInfo } from 'graphql';
+import { AuthGuard } from 'src/services/auth/auth.guard';
+@UseGuards(AuthGuard)
 @Resolver(User)
 export class UserResolver {
-  constructor(@Inject(PrismaService) private prismaService: PrismaService) {}
+  constructor(@Inject(PrismaService) private prisma: PrismaService) {}
 
-  @ResolveField(() => [Post])
-  async posts(@Parent() user: User): Promise<PickPrimitive<Post>[]> {
-    return this.prismaService.user
-      .findUnique({
-        where: {
-          id: user.id,
-        },
-      })
-      .posts();
+  @Query(() => User)
+  async user(
+    @Args('id') id: string,
+    @Info() info: GraphQLResolveInfo,
+  ): Promise<PickPrimitive<User>> {
+    return this.prisma.user.findUnique({
+      where: { id },
+      include: mapRelationsToPrismaInclude(
+        getRequestedRelations<User>(info, {
+          posts: {},
+          books: {},
+          requesterExchangeRequest: {},
+          addresseeExchangeRequest: {},
+        }),
+      ),
+    });
   }
 
   @Query(() => [User])
-  async users(): Promise<PickPrimitive<User>[]> {
-    return this.prismaService.user.findMany();
+  async users(@Info() info: GraphQLResolveInfo) {
+    return this.prisma.user.findMany({
+      include: mapRelationsToPrismaInclude(
+        getRequestedRelations<User>(info, {
+          posts: {},
+          books: {},
+          requesterExchangeRequest: {},
+          addresseeExchangeRequest: {},
+        }),
+      ),
+    });
+  }
+
+  @ResolveField(() => [Post])
+  async posts(@Parent() user: User): Promise<PickPrimitive<Post>[]> {
+    return this.prisma.post.findMany({
+      where: { userId: user.id },
+    });
   }
 
   @Query(() => [Post])
   async draftsByUser(@Args('id') id: string): Promise<PickPrimitive<Post>[]> {
-    return this.prismaService.user
+    return this.prisma.user
       .findUnique({
         where: {
           id,

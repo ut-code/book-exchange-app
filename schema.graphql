@@ -2,11 +2,36 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Book {
+  id: ID!
+  title: String!
+  description: String!
+  userId: String!
+  user: User!
+}
+
+type ExchangeRequest {
+  id: ID!
+  createdAt: Timestamp!
+  updatedAt: Timestamp!
+  requesterUserId: String!
+  requesterUser: User!
+}
+
+"""
+`Date` type as integer. Type represents date and time as number of milliseconds from start of UNIX epoch.
+"""
+scalar Timestamp
+
 type User {
   id: ID!
   username: String!
   password: String!
+  hashedPassword: String!
   posts: [Post!]!
+  books: [Book!]!
+  requesterExchangeRequest: [ExchangeRequest!]!
+  addresseeExchangeRequest: [ExchangeRequest!]!
 }
 
 type Post {
@@ -16,20 +41,17 @@ type Post {
   title: String!
   content: String!
   published: Boolean!
-  viewCount: Int!
+  viewCount: Float!
+  userId: String!
   user: User!
 }
-
-"""
-`Date` type as integer. Type represents date and time as number of milliseconds from start of UNIX epoch.
-"""
-scalar Timestamp
 
 type AuthResponse {
   accessToken: String!
 }
 
 type Query {
+  user(id: String!): User!
   users: [User!]!
   draftsByUser(id: String!): [Post!]!
   post(id: String!): Post!
@@ -40,7 +62,7 @@ type Query {
 type Mutation {
   signUp(input: UserInput!): User!
   signIn(input: UserInput!): AuthResponse!
-  createPost(data: CreatePostInput!): Post!
+  createPost(post: CreatePostInput!): Post!
   incrementPostViewCount(id: String!): Post!
   togglePublishPost(id: String!): Post!
   deletePost(id: String!): Post!

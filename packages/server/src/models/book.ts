@@ -15,6 +15,6 @@ export class Book {
   @Field()
   userId!: string;
 
-  @Field()
+  @Field(() => User)
   user!: User;
 }

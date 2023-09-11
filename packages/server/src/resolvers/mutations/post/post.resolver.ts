@@ -27,6 +27,7 @@ export class PostResolver {
         content: post.content,
         published: false,
         viewCount: 0,
+        user: {},
       },
     });
   }

@@ -43,11 +43,4 @@ export class UserResolver {
   async signIn(@Args('input') input: UserInput): Promise<PickPrimitive<User>> {
     return this.authService.signIn(input.username, input.password);
   }
-
-  @ResolveField(() => [Post])
-  async posts(@Parent() user: User): Promise<PickPrimitive<Post>[]> {
-    return this.prisma.post.findMany({
-      where: { userId: user.id },
-    });
-  }
 }

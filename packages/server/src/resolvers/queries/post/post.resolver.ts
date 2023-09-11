@@ -1,5 +1,12 @@
 import 'reflect-metadata';
-import { Resolver, Query, Args, ResolveField, Parent } from '@nestjs/graphql';
+import {
+  Resolver,
+  Query,
+  Args,
+  ResolveField,
+  Parent,
+  Info,
+} from '@nestjs/graphql';
 import { Inject, UseGuards } from '@nestjs/common';
 import { User } from 'src/models/user';
 import { Post } from 'src/models/post';
@@ -8,27 +15,46 @@ import { AuthGuard } from 'src/services/auth/auth.guard';
 import { RequestUser } from 'src/decorators/user/user.decorator';
 import { Book } from 'src/models/book';
 import { PickPrimitive } from 'src/common/primitive';
+import {
+  getRequestedRelations,
+  mapRelationsToPrismaInclude,
+} from 'src/common/graphql';
+import { GraphQLResolveInfo } from 'graphql';
 
+@UseGuards(AuthGuard)
 @Resolver(Post)
 export class PostResolver {
   constructor(@Inject(PrismaService) private prisma: PrismaService) {}
 
   @Query(() => Post)
-  async post(@Args('id') id: string): Promise<PickPrimitive<Post>> {
+  async post(
+    @Args('id') id: string,
+    @Info() info: GraphQLResolveInfo,
+  ): Promise<PickPrimitive<Post>> {
     return this.prisma.post.findUnique({
       where: { id },
+      include: mapRelationsToPrismaInclude(
+        getRequestedRelations<Post>(info, {
+          user: {},
+        }),
+      ),
     });
   }
 
-  @UseGuards(AuthGuard)
   @Query(() => [Post])
   async posts(
     @RequestUser() requestUser: User,
+    @Info() info: GraphQLResolveInfo,
   ): Promise<PickPrimitive<Post>[]> {
     return this.prisma.post.findMany({
       where: {
         userId: requestUser.id,
       },
+      include: mapRelationsToPrismaInclude(
+        getRequestedRelations<Post>(info, {
+          user: {},
+        }),
+      ),
     });
   }
 
@@ -39,9 +65,14 @@ export class PostResolver {
     });
   }
 
-  @UseGuards(AuthGuard)
   @Query(() => [Post])
-  allPosts(): Promise<PickPrimitive<Post>[]> {
-    return this.prisma.post.findMany();
+  allPosts(@Info() info: GraphQLResolveInfo): Promise<PickPrimitive<Post>[]> {
+    return this.prisma.post.findMany({
+      include: mapRelationsToPrismaInclude(
+        getRequestedRelations<Post>(info, {
+          user: {},
+        }),
+      ),
+    });
   }
 }
