@@ -14,10 +14,10 @@ type Post {
   createdAt: Timestamp!
   updatedAt: Timestamp!
   title: String!
-  content: String
-  published: Boolean
+  content: String!
+  published: Boolean!
   viewCount: Int!
-  author: User
+  user: User!
 }
 
 """
@@ -40,7 +40,7 @@ type Query {
 type Mutation {
   signUp(input: UserInput!): User!
   signIn(input: UserInput!): AuthResponse!
-  createPost(data: PostCreateInput!): Post!
+  createPost(data: CreatePostInput!): Post!
   incrementPostViewCount(id: String!): Post!
   togglePublishPost(id: String!): Post!
   deletePost(id: String!): Post!
@@ -51,7 +51,7 @@ input UserInput {
   password: String!
 }
 
-input PostCreateInput {
+input CreatePostInput {
   title: String!
-  content: String
+  content: String!
 }

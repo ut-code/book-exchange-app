@@ -11,13 +11,14 @@ import { Inject } from '@nestjs/common';
 import { User } from 'src/models/user';
 import { Post } from 'src/models/post';
 import { PrismaService } from 'src/services/prisma/prisma.service';
+import { PickPrimitive } from 'src/common/primitive';
 
 @Resolver(User)
 export class UserResolver {
   constructor(@Inject(PrismaService) private prismaService: PrismaService) {}
 
   @ResolveField(() => [Post])
-  posts(@Parent() user: User): Promise<Post[]> {
+  async posts(@Parent() user: User): Promise<PickPrimitive<Post>[]> {
     return this.prismaService.user
       .findUnique({
         where: {
@@ -28,12 +29,12 @@ export class UserResolver {
   }
 
   @Query(() => [User])
-  async users() {
+  async users(): Promise<PickPrimitive<User>[]> {
     return this.prismaService.user.findMany();
   }
 
   @Query(() => [Post])
-  async draftsByUser(@Args('id') id: string): Promise<Post[]> {
+  async draftsByUser(@Args('id') id: string): Promise<PickPrimitive<Post>[]> {
     return this.prismaService.user
       .findUnique({
         where: {

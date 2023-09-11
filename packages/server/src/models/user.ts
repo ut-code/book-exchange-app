@@ -1,6 +1,7 @@
-import 'reflect-metadata';
 import { ObjectType, Field, ID } from '@nestjs/graphql';
-import { IsEmail } from 'class-validator';
+import { Book } from './book';
+import { ExchangeRequest } from './exchangeRequest';
+import { Post } from './post';
 
 @ObjectType()
 export class User {
@@ -12,4 +13,19 @@ export class User {
 
   @Field()
   password!: string;
+
+  @Field()
+  hashedPassword!: string;
+
+  @Field(() => [Post])
+  posts!: Post[];
+
+  @Field(() => [Book])
+  books!: Book[];
+
+  @Field(() => [ExchangeRequest])
+  requesterExchangeRequest!: ExchangeRequest[];
+
+  @Field(() => [ExchangeRequest])
+  addresseeExchangeRequest!: ExchangeRequest[];
 }
