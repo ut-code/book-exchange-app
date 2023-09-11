@@ -25,10 +25,7 @@ export class UserResolver {
   constructor(@Inject(PrismaService) private prisma: PrismaService) {}
 
   @Query(() => User)
-  async user(
-    @Args('id') id: string,
-    @Info() info: GraphQLResolveInfo,
-  ): Promise<PickPrimitive<User>> {
+  async user(@Args('id') id: string, @Info() info: GraphQLResolveInfo) {
     return this.prisma.user.findUnique({
       where: { id },
       include: mapRelationsToPrismaInclude(

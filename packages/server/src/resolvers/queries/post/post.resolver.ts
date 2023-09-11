@@ -27,10 +27,7 @@ export class PostResolver {
   constructor(@Inject(PrismaService) private prisma: PrismaService) {}
 
   @Query(() => Post)
-  async post(
-    @Args('id') id: string,
-    @Info() info: GraphQLResolveInfo,
-  ): Promise<PickPrimitive<Post>> {
+  async post(@Args('id') id: string, @Info() info: GraphQLResolveInfo) {
     return this.prisma.post.findUnique({
       where: { id },
       include: mapRelationsToPrismaInclude(
@@ -45,7 +42,7 @@ export class PostResolver {
   async posts(
     @RequestUser() requestUser: User,
     @Info() info: GraphQLResolveInfo,
-  ): Promise<PickPrimitive<Post>[]> {
+  ) {
     return this.prisma.post.findMany({
       where: {
         userId: requestUser.id,
@@ -66,7 +63,7 @@ export class PostResolver {
   }
 
   @Query(() => [Post])
-  allPosts(@Info() info: GraphQLResolveInfo): Promise<PickPrimitive<Post>[]> {
+  allPosts(@Info() info: GraphQLResolveInfo) {
     return this.prisma.post.findMany({
       include: mapRelationsToPrismaInclude(
         getRequestedRelations<Post>(info, {
