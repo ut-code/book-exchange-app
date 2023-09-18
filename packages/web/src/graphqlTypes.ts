@@ -14,109 +14,169 @@ export type Scalars = {
   Timestamp: any;
 };
 
+export type AuthResponse = {
+  __typename?: 'AuthResponse';
+  accessToken: Scalars['String'];
+};
+
+export type Book = {
+  __typename?: 'Book';
+  description: Scalars['String'];
+  id: Scalars['ID'];
+  title: Scalars['String'];
+  user: User;
+  userId: Scalars['String'];
+};
+
+export type CreateBookInput = {
+  description: Scalars['String'];
+  title: Scalars['String'];
+};
+
+export type CreatePostInput = {
+  content: Scalars['String'];
+  title: Scalars['String'];
+};
+
+export type CreateUserInput = {
+  password: Scalars['String'];
+  username: Scalars['String'];
+};
+
+export type ExchangeRequest = {
+  __typename?: 'ExchangeRequest';
+  createdAt: Scalars['Timestamp'];
+  id: Scalars['ID'];
+  requesterUser: User;
+  requesterUserId: Scalars['String'];
+  updatedAt: Scalars['Timestamp'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
-  createDraft: Post;
-  deletePost?: Maybe<Post>;
+  createBook: Book;
+  createPost: Post;
+  createUser: User;
+  deleteBook: Book;
+  deleteBooks: Array<Book>;
+  deletePost: Post;
   incrementPostViewCount: Post;
-  signupUser: User;
-  togglePublishPost?: Maybe<Post>;
+  signinUser: AuthResponse;
+  togglePublishPost: Post;
+  updateBook: Book;
 };
 
 
-export type MutationCreateDraftArgs = {
-  authorEmail: Scalars['String'];
-  data: PostCreateInput;
+export type MutationCreateBookArgs = {
+  input: CreateBookInput;
+};
+
+
+export type MutationCreatePostArgs = {
+  post: CreatePostInput;
+};
+
+
+export type MutationCreateUserArgs = {
+  input: CreateUserInput;
+};
+
+
+export type MutationDeleteBookArgs = {
+  id: Scalars['String'];
+};
+
+
+export type MutationDeleteBooksArgs = {
+  ids: Array<Scalars['String']>;
 };
 
 
 export type MutationDeletePostArgs = {
-  id: Scalars['Float'];
+  id: Scalars['String'];
 };
 
 
 export type MutationIncrementPostViewCountArgs = {
-  id: Scalars['Float'];
+  id: Scalars['String'];
 };
 
 
-export type MutationSignupUserArgs = {
-  data: UserCreateInput;
+export type MutationSigninUserArgs = {
+  input: SigninUserInput;
 };
 
 
 export type MutationTogglePublishPostArgs = {
-  id: Scalars['Float'];
+  id: Scalars['String'];
+};
+
+
+export type MutationUpdateBookArgs = {
+  id: Scalars['String'];
+  input: CreateBookInput;
 };
 
 export type Post = {
   __typename?: 'Post';
-  author?: Maybe<User>;
-  content?: Maybe<Scalars['String']>;
+  content: Scalars['String'];
   createdAt: Scalars['Timestamp'];
-  id: Scalars['Int'];
-  published?: Maybe<Scalars['Boolean']>;
+  id: Scalars['ID'];
+  published: Scalars['Boolean'];
   title: Scalars['String'];
   updatedAt: Scalars['Timestamp'];
-  viewCount: Scalars['Int'];
-};
-
-export type PostCreateInput = {
-  content?: InputMaybe<Scalars['String']>;
-  title: Scalars['String'];
-};
-
-export type PostOrderByUpdatedAtInput = {
-  updatedAt: SortOrder;
+  user: User;
+  userId: Scalars['String'];
+  viewCount: Scalars['Float'];
 };
 
 export type Query = {
   __typename?: 'Query';
-  allUsers?: Maybe<Array<User>>;
-  draftsByUser?: Maybe<Array<Post>>;
-  feed: Array<Post>;
-  postById?: Maybe<Post>;
+  allBooks: Array<Book>;
+  allPosts: Array<Post>;
+  book: Book;
+  books: Array<Book>;
+  booksByUserId: Array<Book>;
+  draftsByUser: Array<Post>;
+  post: Post;
+  posts: Array<Post>;
+  user: User;
+  users: Array<User>;
+};
+
+
+export type QueryBookArgs = {
+  id: Scalars['String'];
+};
+
+
+export type QueryBooksByUserIdArgs = {
+  userId: Scalars['String'];
 };
 
 
 export type QueryDraftsByUserArgs = {
-  userUniqueInput: UserUniqueInput;
+  id: Scalars['String'];
 };
 
 
-export type QueryFeedArgs = {
-  orderBy?: InputMaybe<PostOrderByUpdatedAtInput>;
-  searchString?: InputMaybe<Scalars['String']>;
-  skip?: InputMaybe<Scalars['Float']>;
-  take?: InputMaybe<Scalars['Float']>;
+export type QueryPostArgs = {
+  id: Scalars['String'];
 };
 
-
-export type QueryPostByIdArgs = {
-  id: Scalars['Float'];
+export type SigninUserInput = {
+  password: Scalars['String'];
+  username: Scalars['String'];
 };
-
-export enum SortOrder {
-  Asc = 'asc',
-  Desc = 'desc'
-}
 
 export type User = {
   __typename?: 'User';
-  email: Scalars['String'];
-  id: Scalars['Int'];
-  name?: Maybe<Scalars['String']>;
-  posts?: Maybe<Array<Post>>;
-};
-
-export type UserCreateInput = {
-  email: Scalars['String'];
-  name?: InputMaybe<Scalars['String']>;
+  addresseeExchangeRequest: Array<ExchangeRequest>;
+  books: Array<Book>;
+  hashedPassword: Scalars['String'];
+  id: Scalars['ID'];
   password: Scalars['String'];
-  posts?: InputMaybe<Array<PostCreateInput>>;
-};
-
-export type UserUniqueInput = {
-  email?: InputMaybe<Scalars['String']>;
-  id?: InputMaybe<Scalars['Float']>;
+  posts: Array<Post>;
+  requesterExchangeRequest: Array<ExchangeRequest>;
+  username: Scalars['String'];
 };

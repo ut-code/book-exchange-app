@@ -46,7 +46,14 @@ export function getRequestedRelations<T>(
   return getRequestedRelationsRecursively(bareSelectionSet, availableRelations);
 }
 
-export function mapRelationsToPrismaInclude(relations: string[]): any {
+type PrismaInclude = {
+  [key: string]: PrismaInclude | {};
+};
+
+export function mapRelationsToPrismaInclude(
+  relations: string[],
+): PrismaInclude | undefined {
+  if (!relations.length) return undefined;
   return relations.reduce((acc, relation) => {
     const parts = relation.split('.');
     let lastObject = acc;

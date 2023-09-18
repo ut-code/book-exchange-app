@@ -1,16 +1,8 @@
-import {
-  Resolver,
-  Mutation,
-  Args,
-  ResolveField,
-  Parent,
-} from '@nestjs/graphql';
+import { Resolver, Mutation, Args } from '@nestjs/graphql';
 import { Inject } from '@nestjs/common';
 import { Post } from 'src/models/post';
 import { CreatePostInput } from './post.input';
 import { PrismaService } from 'src/services/prisma/prisma.service';
-import { User } from 'src/models/user';
-import { Book } from 'src/models/book';
 import { PickPrimitive } from 'src/common/primitive';
 
 @Resolver(Post)

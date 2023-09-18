@@ -19,15 +19,19 @@ import {
 } from 'src/common/graphql';
 import { GraphQLResolveInfo } from 'graphql';
 import { AuthGuard } from 'src/services/auth/auth.guard';
+import { RequestUser } from 'src/decorators/user/user.decorator';
 @UseGuards(AuthGuard)
 @Resolver(User)
 export class UserResolver {
   constructor(@Inject(PrismaService) private prisma: PrismaService) {}
 
   @Query(() => User)
-  async user(@Args('id') id: string, @Info() info: GraphQLResolveInfo) {
+  async user(
+    @RequestUser() requestUser: User,
+    @Info() info: GraphQLResolveInfo,
+  ) {
     return this.prisma.user.findUnique({
-      where: { id },
+      where: { id: requestUser.id },
       include: mapRelationsToPrismaInclude(
         getRequestedRelations<User>(info, {
           posts: {},
@@ -41,15 +45,16 @@ export class UserResolver {
 
   @Query(() => [User])
   async users(@Info() info: GraphQLResolveInfo) {
+    const includeRelations = mapRelationsToPrismaInclude(
+      getRequestedRelations<User>(info, {
+        posts: {},
+        books: {},
+        requesterExchangeRequest: {},
+        addresseeExchangeRequest: {},
+      }),
+    );
     return this.prisma.user.findMany({
-      include: mapRelationsToPrismaInclude(
-        getRequestedRelations<User>(info, {
-          posts: {},
-          books: {},
-          requesterExchangeRequest: {},
-          addresseeExchangeRequest: {},
-        }),
-      ),
+      include: includeRelations,
     });
   }
 

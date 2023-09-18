@@ -9,7 +9,6 @@ import {
 } from '@nestjs/graphql';
 import { Inject, UseGuards } from '@nestjs/common';
 import { User } from 'src/models/user';
-import { Post } from 'src/models/post';
 import { PrismaService } from 'src/services/prisma/prisma.service';
 import { AuthGuard } from 'src/services/auth/auth.guard';
 import { RequestUser } from 'src/decorators/user/user.decorator';
@@ -21,34 +20,51 @@ import {
 } from 'src/common/graphql';
 import { GraphQLResolveInfo } from 'graphql';
 
-// @UseGuards(AuthGuard)
-@Resolver(Post)
-export class PostResolver {
+@UseGuards(AuthGuard)
+@Resolver(Book)
+export class BookResolver {
   constructor(@Inject(PrismaService) private prisma: PrismaService) {}
 
-  @Query(() => Post)
-  async post(@Args('id') id: string, @Info() info: GraphQLResolveInfo) {
-    return this.prisma.post.findUnique({
+  @Query(() => Book)
+  async book(@Args('id') id: string, @Info() info: GraphQLResolveInfo) {
+    return this.prisma.book.findUnique({
       where: { id },
       include: mapRelationsToPrismaInclude(
-        getRequestedRelations<Post>(info, {
+        getRequestedRelations<Book>(info, {
           user: {},
         }),
       ),
     });
   }
 
-  @Query(() => [Post])
-  async posts(
+  @Query(() => [Book])
+  async books(
     @RequestUser() requestUser: User,
     @Info() info: GraphQLResolveInfo,
   ) {
-    return this.prisma.post.findMany({
+    return this.prisma.book.findMany({
       where: {
         userId: requestUser.id,
       },
       include: mapRelationsToPrismaInclude(
-        getRequestedRelations<Post>(info, {
+        getRequestedRelations<Book>(info, {
+          user: {},
+        }),
+      ),
+    });
+  }
+
+  @Query(() => [Book])
+  async booksByUserId(
+    @Args('userId') userId: string,
+    @Info() info: GraphQLResolveInfo,
+  ) {
+    return this.prisma.book.findMany({
+      where: {
+        userId,
+      },
+      include: mapRelationsToPrismaInclude(
+        getRequestedRelations<Book>(info, {
           user: {},
         }),
       ),
@@ -56,17 +72,17 @@ export class PostResolver {
   }
 
   @ResolveField(() => User)
-  async user(@Parent() post: Post): Promise<PickPrimitive<User>> {
+  async user(@Parent() book: Book): Promise<PickPrimitive<User>> {
     return this.prisma.user.findUnique({
-      where: { id: post.userId },
+      where: { id: book.userId },
     });
   }
 
-  @Query(() => [Post])
-  allPosts(@Info() info: GraphQLResolveInfo) {
-    return this.prisma.post.findMany({
+  @Query(() => [Book])
+  allBooks(@Info() info: GraphQLResolveInfo) {
+    return this.prisma.book.findMany({
       include: mapRelationsToPrismaInclude(
-        getRequestedRelations<Post>(info, {
+        getRequestedRelations<Book>(info, {
           user: {},
         }),
       ),

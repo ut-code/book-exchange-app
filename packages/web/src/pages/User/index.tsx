@@ -1,58 +1,52 @@
-import React, { useState } from 'react';
-import { useAllUsersQuery, useSignupUserMutation } from './query.generated';
+import { Container, Typography, Box, Divider, Button } from '@mui/material';
+import { useRouter } from 'next/router';
+import React from 'react';
+import SigninUser from '../../organisms/Signin/SigninUser';
+import SignupUser from '../../organisms/Signup/SignupUser';
+import SignoutUser from '../../organisms/Signout/SignoutUser';
+import { useUserQuery } from './query.generated';
 
-export default function UserPage() {
-  const { data } = useAllUsersQuery();
-  const [signupUser, { error: signupError }] = useSignupUserMutation();
-
-  const [email, setEmail] = useState('');
-  const [name, setName] = useState('');
-  const [password, setPassword] = useState('');
-
-  const handleSignup = async () => {
-    try {
-      await signupUser({
-        variables: {
-          userCreateInput: {
-            email,
-            name,
-            password,
-          },
-        },
-      });
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  };
+const UserPage = () => {
+  const query = useUserQuery();
+  const user = query.data?.user;
+  const router = useRouter();
 
   return (
-    <div>
-      <div>hello</div>
-      <div>
-        <input
-          type="text"
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <button onClick={handleSignup}>Signup</button>
-        {signupError && <div>Error: {signupError.message}</div>}
-      </div>
-      {data?.allUsers?.map((user) => (
-        <div key={user.id}>{user.email}</div>
-      ))}
-    </div>
+    <Container sx={{ bgcolor: 'black'}}>
+      <Box mt={2} display="flex" justifyContent="flex-end">
+        <Button 
+          variant="contained" 
+          color="primary"
+          onClick={() => router.push('/')} 
+        >
+          Go to Books Page
+        </Button>
+      </Box>
+      {!user && (
+        <Box mt={2}>
+          <Typography variant="h4" component="h1" gutterBottom>
+            ユーザー
+          </Typography>
+          {/* <AuthStatus /> */}
+          <Box mt={3}>
+            <SignupUser />
+          </Box>
+          <Divider variant="middle" style={{ margin: '20px 0' }} />
+          <Box mt={3}>
+            <SigninUser />
+          </Box>
+        </Box>
+      )}
+      {user && (
+        <Box>
+          <Divider variant="middle" style={{ margin: '20px 0' }} />
+          <Box my={2}>
+            <SignoutUser/>
+          </Box>
+        </Box>
+      )}
+    </Container>
   );
 }
+
+export default UserPage;

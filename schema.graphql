@@ -2,14 +2,6 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Book {
-  id: ID!
-  title: String!
-  description: String!
-  userId: String!
-  user: User!
-}
-
 type ExchangeRequest {
   id: ID!
   createdAt: Timestamp!
@@ -23,17 +15,6 @@ type ExchangeRequest {
 """
 scalar Timestamp
 
-type User {
-  id: ID!
-  username: String!
-  password: String!
-  hashedPassword: String!
-  posts: [Post!]!
-  books: [Book!]!
-  requesterExchangeRequest: [ExchangeRequest!]!
-  addresseeExchangeRequest: [ExchangeRequest!]!
-}
-
 type Post {
   id: ID!
   createdAt: Timestamp!
@@ -46,29 +27,61 @@ type Post {
   user: User!
 }
 
+type User {
+  id: ID!
+  username: String!
+  password: String!
+  hashedPassword: String!
+  posts: [Post!]!
+  books: [Book!]!
+  requesterExchangeRequest: [ExchangeRequest!]!
+  addresseeExchangeRequest: [ExchangeRequest!]!
+}
+
+type Book {
+  id: ID!
+  title: String!
+  description: String!
+  userId: String!
+  user: User!
+}
+
 type AuthResponse {
   accessToken: String!
 }
 
 type Query {
-  user(id: String!): User!
+  user: User!
   users: [User!]!
   draftsByUser(id: String!): [Post!]!
   post(id: String!): Post!
   posts: [Post!]!
   allPosts: [Post!]!
+  book(id: String!): Book!
+  books: [Book!]!
+  booksByUserId(userId: String!): [Book!]!
+  allBooks: [Book!]!
 }
 
 type Mutation {
-  signUp(input: UserInput!): User!
-  signIn(input: UserInput!): AuthResponse!
+  createUser(input: CreateUserInput!): User!
+  signinUser(input: SigninUserInput!): AuthResponse!
   createPost(post: CreatePostInput!): Post!
   incrementPostViewCount(id: String!): Post!
   togglePublishPost(id: String!): Post!
   deletePost(id: String!): Post!
+  createBook(input: CreateBookInput!): Book!
+  updateBook(id: String!, input: CreateBookInput!): Book!
+  deleteBook(id: String!): Book!
+  deleteBooks(ids: [String!]!): [Book!]!
 }
 
-input UserInput {
+input CreateUserInput {
+  username: String!
+  password: String!
+}
+
+input SigninUserInput {
   username: String!
   password: String!
 }
@@ -76,4 +89,9 @@ input UserInput {
 input CreatePostInput {
   title: String!
   content: String!
+}
+
+input CreateBookInput {
+  title: String!
+  description: String!
 }

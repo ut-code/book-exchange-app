@@ -1,11 +1,7 @@
-install/dependencies:
-	server/install
-	web/install
+install/dependencies: server/install web/install 
 	npm ci
 
-all:
-	server/build web/build
-	cd packages/server && npx prisma generate && npx prisma db push
+all: server/build web/build
 
 lint:
 	npm run lint

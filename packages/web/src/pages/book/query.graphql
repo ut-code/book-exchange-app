@@ -1,0 +1,51 @@
+query UserWithBooks {
+  user {
+    id
+    username
+    books {
+      id
+      title
+      description
+    }
+  }
+}
+
+query Books {
+  books {
+    id
+    title
+    description
+  }
+}
+
+mutation CreateBook($input: CreateBookInput!) {
+  createBook(input: $input) {
+    id
+    title
+    description
+  }
+}
+
+mutation UpdateBook($id: String!, $input: CreateBookInput!) {
+  updateBook(id: $id, input: $input) {
+    id
+    title
+    description
+  }
+}
+
+mutation DeleteBook($id: String!) {
+  deleteBook(id: $id) {
+    id
+    title
+    description
+  }
+}
+
+mutation DeleteBooks($ids: [String!]!) {
+  deleteBooks(ids: $ids) {
+    id
+    title
+    description
+  }
+}
