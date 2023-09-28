@@ -16,6 +16,9 @@ export class AuthService {
         username,
       },
     });
+    if (user.deletedAt !== null) {
+      throw new UnauthorizedException();
+    }
     const isMatch = await bcrypt.compare(password, user.hashedPassword);
     if (!isMatch) {
       throw new UnauthorizedException();

@@ -54,7 +54,6 @@ const CreateBook = (props: CreateBookProps) => {
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           autoComplete="off"
-
         />
       </Box>
       <Box mt={2}>

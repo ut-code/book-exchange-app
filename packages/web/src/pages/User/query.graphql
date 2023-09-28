@@ -37,4 +37,10 @@ mutation SigninUser($signinUserInput: SigninUserInput!) {
   }
 }
 
+mutation DeleteUser {
+  deleteUser {
+    id
+  }
+}
+
 

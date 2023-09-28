@@ -18,16 +18,18 @@ const Book = () => {
 
   return (
     <Container>
-      {books?.map((book) => (
-        <Box key={book.id} mb={2}>
-          <Card>
-            <CardContent>
-              <Typography variant="h6">{book.title}</Typography>
-              <Typography variant="body1">{book.description}</Typography>
-            </CardContent>
-          </Card>
-        </Box>
-      ))}
+      <Box mt={2}>
+        {books?.map((book) => (
+          <Box key={book.id} m={2}>
+            <Card>
+              <CardContent>
+                <Typography variant="h6">{book.title}</Typography>
+                <Typography variant="body1">{book.description}</Typography>
+              </CardContent>
+            </Card>
+          </Box>
+        ))}
+      </Box>
     </Container>
   );
 };

@@ -1,10 +1,11 @@
 import { Container, Typography, Box, Divider, Button } from '@mui/material';
 import { useRouter } from 'next/router';
 import React from 'react';
-import SigninUser from '../../organisms/Signin/SigninUser';
+import SigninUser from '../../organisms/Signin/SigninUserContainer';
 import SignupUser from '../../organisms/Signup/SignupUser';
 import SignoutUser from '../../organisms/Signout/SignoutUser';
 import { useUserQuery } from './query.generated';
+import ShareLinkButton from '../../organisms/ShareLink/ShareLinkButtonPresenter';
 
 const UserPage = () => {
   const query = useUserQuery();
@@ -12,7 +13,7 @@ const UserPage = () => {
   const router = useRouter();
 
   return (
-    <Container sx={{ bgcolor: 'black'}}>
+    <Container sx={{ bgcolor: 'black', width: '70%'}}>
       <Box mt={2} display="flex" justifyContent="flex-end">
         <Button 
           variant="contained" 
@@ -27,13 +28,12 @@ const UserPage = () => {
           <Typography variant="h4" component="h1" gutterBottom>
             ユーザー
           </Typography>
-          {/* <AuthStatus /> */}
-          <Box mt={3}>
-            <SignupUser />
+           <Box mt={3}>
+            <SigninUser />
           </Box>
           <Divider variant="middle" style={{ margin: '20px 0' }} />
           <Box mt={3}>
-            <SigninUser />
+            <SignupUser />
           </Box>
         </Box>
       )}
@@ -43,6 +43,7 @@ const UserPage = () => {
           <Box my={2}>
             <SignoutUser/>
           </Box>
+          <ShareLinkButton isDisabled={false} user={user}/>
         </Box>
       )}
     </Container>

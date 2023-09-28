@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSignupUserMutation, useUsersQuery } from '../../pages/user/query.generated';
-import { Button, TextField, Typography, List, ListItem, Divider } from '@mui/material';
+import { Button, TextField, Typography, List, ListItem, Divider, Box } from '@mui/material';
 
 export default function SignupUser() {
   const { data } = useUsersQuery();
@@ -53,9 +53,11 @@ export default function SignupUser() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <Button variant="contained" color="primary" onClick={handleSignup}>
-          Signup
-        </Button>
+        <Box mt={1.5}>
+          <Button variant="contained" color="primary" onClick={handleSignup}>
+            Signup
+          </Button>
+        </Box>
     </div>
   );
 }

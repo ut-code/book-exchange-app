@@ -14,7 +14,7 @@ const DeleteBook = (props: DeleteBookProps) => {
   const [deleteBooks] = useDeleteBooksMutation();
   const [selectedBookIds, setSelectedBookIds] = useState<string[]>([]);
 
-  const handleDeleteBook = async () => {
+  const handleDeleteBooks = async () => {
     try {
       await deleteBooks({
         variables: {
@@ -60,7 +60,7 @@ const DeleteBook = (props: DeleteBookProps) => {
         <Button 
           variant="contained" 
           color="secondary" 
-          onClick={() => handleDeleteBook} 
+          onClick={handleDeleteBooks} 
           disabled={selectedBookIds.length === 0}>
           本を削除する
         </Button>

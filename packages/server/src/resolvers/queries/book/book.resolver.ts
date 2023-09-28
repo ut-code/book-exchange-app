@@ -20,7 +20,6 @@ import {
 } from 'src/common/graphql';
 import { GraphQLResolveInfo } from 'graphql';
 
-@UseGuards(AuthGuard)
 @Resolver(Book)
 export class BookResolver {
   constructor(@Inject(PrismaService) private prisma: PrismaService) {}
@@ -37,6 +36,7 @@ export class BookResolver {
     });
   }
 
+  @UseGuards(AuthGuard)
   @Query(() => [Book])
   async books(
     @RequestUser() requestUser: User,
@@ -72,12 +72,13 @@ export class BookResolver {
   }
 
   @ResolveField(() => User)
-  async user(@Parent() book: Book): Promise<PickPrimitive<User>> {
+  async user(@Parent() book: Book) {
     return this.prisma.user.findUnique({
       where: { id: book.userId },
     });
   }
 
+  @UseGuards(AuthGuard)
   @Query(() => [Book])
   allBooks(@Info() info: GraphQLResolveInfo) {
     return this.prisma.book.findMany({

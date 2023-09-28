@@ -55,11 +55,13 @@ export type ExchangeRequest = {
 export type Mutation = {
   __typename?: 'Mutation';
   createBook: Book;
+  createBooks: Array<Book>;
   createPost: Post;
   createUser: User;
   deleteBook: Book;
   deleteBooks: Array<Book>;
   deletePost: Post;
+  deleteUser: User;
   incrementPostViewCount: Post;
   signinUser: AuthResponse;
   togglePublishPost: Post;
@@ -69,6 +71,11 @@ export type Mutation = {
 
 export type MutationCreateBookArgs = {
   input: CreateBookInput;
+};
+
+
+export type MutationCreateBooksArgs = {
+  input: Array<CreateBookInput>;
 };
 
 

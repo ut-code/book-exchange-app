@@ -59,14 +59,14 @@ export class UserResolver {
   }
 
   @ResolveField(() => [Post])
-  async posts(@Parent() user: User): Promise<PickPrimitive<Post>[]> {
+  async posts(@Parent() user: User) {
     return this.prisma.post.findMany({
       where: { userId: user.id },
     });
   }
 
   @Query(() => [Post])
-  async draftsByUser(@Args('id') id: string): Promise<PickPrimitive<Post>[]> {
+  async draftsByUser(@Args('id') id: string) {
     return this.prisma.user
       .findUnique({
         where: {

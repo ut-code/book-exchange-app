@@ -12,6 +12,7 @@ model User {
   username                 String            @unique
   password                 String
   hashedPassword           String
+  deletedAt                DateTime?
   posts                    Post[]
   books                    Book[]
   requesterExchangeRequest ExchangeRequest[] @relation("RequesterExchangeRequest")

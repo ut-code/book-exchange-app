@@ -1,4 +1,5 @@
 // pages/user/[id].tsx
+import UserInfo from '../../organisms/UserInfo/UserInfo';
 import {
   Container,
   Typography,
@@ -16,6 +17,8 @@ import React from 'react';
 import { use, useState } from 'react';
 import { useBooksQuery } from '../book/query.generated';
 import { useBooksByUserIdQuery, useUserQuery } from './query.generated';
+import SignupUser from '@/organisms/Signup/SignupUser';
+import SigninUser from '@/organisms/Signin/SigninUserContainer';
 
 const UserProfile = () => {
   const router = useRouter();
@@ -27,7 +30,6 @@ const UserProfile = () => {
   }
 
   const query = useUserQuery();
-  const user = query.data?.user;
 
   const booksQuery = useBooksQuery()
   const books = booksQuery.data?.books
@@ -38,21 +40,14 @@ const UserProfile = () => {
     }
   })
   const booksByUserId = booksByUserIdQuery.data?.booksByUserId
-  const link = `localhost:3000/user/${user?.id}`
-
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(link)
-    alert('リンクをコピーできました. 本を貸し借りしたい友達にリンクをシェアしよう!')
-  }
-
+  const user = booksByUserIdQuery.data?.booksByUserId[0]?.user
 
   return (
     <Container>
-      <Box my={4}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          ユーザー: {user?.username}
-        </Typography>
- 
+      {user && (
+        <UserInfo user={user} isAuthenticated={false}/>
+      )}
+      <Box my={3}>
         {booksByUserId?.map((book) => (
           <Card key={book.id} variant="outlined" style={{ marginBottom: '20px' }}>
             <CardContent>
@@ -61,10 +56,12 @@ const UserProfile = () => {
             </CardContent>
           </Card>
         ))}
-
-        <Button onClick={copyToClipboard} variant="contained" color="primary">Copy Link</Button>
-        <Typography mt={2}>君の持っている本一覧を友達にシェアしよう</Typography>
-        
+        {user && booksByUserId && 
+          <Typography variant="h6" component="h1" gutterBottom>
+            {user.username} さんは{booksByUserId.length}冊の本を持っています
+          </Typography>
+        }
+        <SigninUser/>
       </Box>
     </Container>
   );

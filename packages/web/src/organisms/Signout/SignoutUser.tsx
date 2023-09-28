@@ -1,12 +1,9 @@
-import React, { useState } from 'react';
-import { useUserQuery, useUsersQuery } from '../../pages/user/query.generated';
-import { Button, TextField, Typography, List, ListItem, Divider } from '@mui/material';
-import AuthStatus from '../AuthStatus/AuthStatus';
+import React from 'react';
+import { useUserQuery } from '../../pages/user/query.generated';
+import { Button } from '@mui/material';
+import AuthStatus from '../AuthStatus/AuthStatusContainer';
 
 export default function SignoutUser() {
-  const query = useUserQuery();
-  const user = query.data?.user;
-  
   const handleSignout = async () => {
     try {
       localStorage.removeItem('accessToken');
@@ -19,7 +16,7 @@ export default function SignoutUser() {
   return (
     <div>
         <AuthStatus/>
-        <Button variant="contained" color="primary" onClick={handleSignout}>
+        <Button variant="outlined" color="secondary" onClick={handleSignout}>
           Signout
         </Button>
     </div>

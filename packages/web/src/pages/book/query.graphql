@@ -26,6 +26,14 @@ mutation CreateBook($input: CreateBookInput!) {
   }
 }
 
+mutation CreateBooks($input: [CreateBookInput!]!) {
+  createBooks(input: $input) {
+    id
+    title
+    description
+  }
+}
+
 mutation UpdateBook($id: String!, $input: CreateBookInput!) {
   updateBook(id: $id, input: $input) {
     id

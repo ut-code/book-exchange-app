@@ -9,6 +9,7 @@ import { Request } from 'express';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { PrismaService } from '../prisma/prisma.service';
 import { jwtConstants } from 'src/common/constants';
+import { isNonNullType } from 'graphql';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -27,13 +28,14 @@ export class AuthGuard implements CanActivate {
       const payload = await this.jwtService.verifyAsync(token, {
         secret: jwtConstants.secret,
       });
-      // 💡 We're assigning the payload to the request object here
-      // so that we can access it in our route handlers
       const user = await this.prismaService.user.findUnique({
         where: {
           id: payload.sub,
         },
       });
+      if (user.deletedAt !== null) {
+        throw new UnauthorizedException();
+      }
       request.user = user;
     } catch {
       throw new UnauthorizedException();

@@ -65,12 +65,14 @@ type Query {
 
 type Mutation {
   createUser(input: CreateUserInput!): User!
+  deleteUser: User!
   signinUser(input: SigninUserInput!): AuthResponse!
   createPost(post: CreatePostInput!): Post!
   incrementPostViewCount(id: String!): Post!
   togglePublishPost(id: String!): Post!
   deletePost(id: String!): Post!
   createBook(input: CreateBookInput!): Book!
+  createBooks(input: [CreateBookInput!]!): [Book!]!
   updateBook(id: String!, input: CreateBookInput!): Book!
   deleteBook(id: String!): Book!
   deleteBooks(ids: [String!]!): [Book!]!

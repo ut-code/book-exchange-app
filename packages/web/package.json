@@ -10,7 +10,9 @@
     "generate": "graphql-codegen --config codegen.ts",
     "graphql:codegen": "graphql-code-generator --config ./codegen.ts",
     "graphql:codegen:watch": "graphql-code-generator --watch --config ./codegen.ts",
-    "graphql:codegen:clean": "rm `find . -name query.generated.ts -or -name graphqlTypes.ts -type f`"
+    "graphql:codegen:clean": "rm `find . -name query.generated.ts -or -name graphqlTypes.ts -type f`",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@apollo/client": "^3.8.3",
@@ -19,6 +21,7 @@
     "@emotion/styled": "^11.11.0",
     "@graphql-codegen/near-operation-file-preset": "^2.5.0",
     "@graphql-codegen/typescript-react-apollo": "^3.3.7",
+    "@mui/icons-material": "^5.14.9",
     "@mui/material": "^5.14.7",
     "@types/node": "18.15.13",
     "@types/react": "18.0.38",
@@ -37,6 +40,21 @@
     "@graphql-codegen/client-preset": "3.0.1",
     "@graphql-codegen/introspection": "3.0.1",
     "@graphql-codegen/typescript": "^3.0.4",
-    "@graphql-codegen/typescript-operations": "^3.0.4"
+    "@graphql-codegen/typescript-operations": "^3.0.4",
+    "@storybook/addon-essentials": "^7.4.4",
+    "@storybook/addon-interactions": "^7.4.4",
+    "@storybook/addon-links": "^7.4.4",
+    "@storybook/addon-onboarding": "^1.0.8",
+    "@storybook/blocks": "^7.4.4",
+    "@storybook/nextjs": "^7.4.4",
+    "@storybook/react": "^7.4.4",
+    "@storybook/testing-library": "^0.2.1",
+    "eslint-plugin-storybook": "^0.6.14",
+    "storybook": "^7.4.4"
+  },
+  "eslintConfig": {
+    "extends": [
+      "plugin:storybook/recommended"
+    ]
   }
 }

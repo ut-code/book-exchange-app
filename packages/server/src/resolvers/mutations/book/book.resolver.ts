@@ -18,7 +18,7 @@ export class BookResolver {
   async createBook(
     @RequestUser() requestUser: User,
     @Args('input') input: CreateBookInput,
-  ): Promise<PickPrimitive<Book>> {
+  ) {
     const inputSchema = z.object({
       title: z.string().nonempty('Title cannot be empty.'),
       description: z.string().optional(),
@@ -38,12 +38,38 @@ export class BookResolver {
     });
   }
 
+  @Mutation(() => [Book])
+  async createBooks(
+    @RequestUser() requestUser: User,
+    @Args('input', { type: () => [CreateBookInput] }) input: CreateBookInput[],
+  ) {
+    const inputSchema = z.array(
+      z.object({
+        title: z.string().nonempty('Title cannot be empty.'),
+        description: z.string().optional(),
+      }),
+    );
+
+    const validatedInput = inputSchema.safeParse(input);
+    if (validatedInput.success === false) {
+      throw new Error(validatedInput.error.message);
+    }
+
+    return this.prisma.book.createMany({
+      data: input.map((book) => ({
+        title: book.title,
+        description: book.description,
+        userId: requestUser.id,
+      })),
+    });
+  }
+
   @Mutation(() => Book)
   async updateBook(
     @RequestUser() requestUser: User,
     @Args('id') id: string,
     @Args('input') input: CreateBookInput,
-  ): Promise<PickPrimitive<Book>> {
+  ) {
     const book = await this.prisma.book.findUnique({
       where: {
         id,
@@ -64,10 +90,7 @@ export class BookResolver {
   }
 
   @Mutation(() => Book)
-  async deleteBook(
-    @RequestUser() requestUser: User,
-    @Args('id') id: string,
-  ): Promise<PickPrimitive<Book>> {
+  async deleteBook(@RequestUser() requestUser: User, @Args('id') id: string) {
     const book = await this.prisma.book.delete({
       where: {
         id,

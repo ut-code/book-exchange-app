@@ -8,6 +8,7 @@ import { AuthService } from 'src/services/auth/auth.service';
 import { AuthResponse } from 'src/services/auth/auth.output';
 import * as bcrypt from 'bcrypt';
 import { PickPrimitive } from 'src/common/primitive';
+import { RequestUser } from 'src/decorators/user/user.decorator';
 
 const saltRounds = 10;
 
@@ -20,9 +21,7 @@ export class UserResolver {
   ) {}
 
   @Mutation(() => User)
-  async createUser(
-    @Args('input') input: CreateUserInput,
-  ): Promise<PickPrimitive<User>> {
+  async createUser(@Args('input') input: CreateUserInput) {
     const hash = await bcrypt.hash(input.password, saltRounds);
 
     return this.prismaService.user.create({
@@ -36,12 +35,21 @@ export class UserResolver {
 
   // update
 
-  // delete
+  // delete 論理削除
+  @Mutation(() => User)
+  async deleteUser(@RequestUser() requestUser: User) {
+    return this.prisma.user.update({
+      where: {
+        id: requestUser.id,
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
+  }
 
   @Mutation(() => AuthResponse)
-  async signinUser(
-    @Args('input') input: SigninUserInput,
-  ): Promise<PickPrimitive<AuthResponse>> {
+  async signinUser(@Args('input') input: SigninUserInput) {
     return this.authService.signIn(input.username, input.password);
   }
 }

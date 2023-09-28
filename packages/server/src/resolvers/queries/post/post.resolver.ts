@@ -56,7 +56,7 @@ export class PostResolver {
   }
 
   @ResolveField(() => User)
-  async user(@Parent() post: Post): Promise<PickPrimitive<User>> {
+  async user(@Parent() post: Post) {
     return this.prisma.user.findUnique({
       where: { id: post.userId },
     });

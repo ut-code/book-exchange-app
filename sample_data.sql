@@ -1,6 +1,6 @@
 START TRANSACTION;
 -- ユーザーの挿入
-INSERT INTO "User" (id, name, email, password)
+INSERT INTO "user" (id, name, email, password)
 VALUES (
     '9f334c9b-79bc-4137-aece-6eec3409bf9f',
     'Alice',
