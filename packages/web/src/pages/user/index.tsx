@@ -18,7 +18,7 @@ const UserPage = () => {
         <Button 
           variant="contained" 
           color="primary"
-          onClick={() => router.push('/')} 
+          onClick={() => router.push('/book')} 
         >
           Go to Books Page
         </Button>

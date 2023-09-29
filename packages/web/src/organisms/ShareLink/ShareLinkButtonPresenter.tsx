@@ -16,7 +16,7 @@ export type ShareLinkButtonProps = {
 
 const ShareLinkButtonPresenter = (props: ShareLinkButtonProps) => {
 
-  const link = `localhost:3000/user/${props.user?.id}`
+  const link = `https://book-exchange-app.com/user/${props.user?.id}`
 
   const copyToClipboard = async () => {
     try {

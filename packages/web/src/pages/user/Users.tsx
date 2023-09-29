@@ -1,5 +1,5 @@
 import React from 'react';
-import { useUsersQuery } from '../../pages/user/query.generated';
+import { useUsersQuery } from './query.generated';
 import { Typography, List, ListItem, Divider } from '@mui/material';
 
 const Users = () => {

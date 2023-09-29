@@ -1,17 +1,12 @@
-import { Container, Typography, Paper, Divider, Box, Button, Stack } from '@mui/material';
-import AuthStatus from '../../organisms/AuthStatus/AuthStatusContainer';
+import { Container, Divider, Box, Button, Stack } from '@mui/material';
 import { useUserQuery } from '../user/query.generated';
-import Books from './Books';
 import CreateBook from './CreateBook';
-import DeleteBook from './DeleteBook';
 import { useBooksQuery } from './query.generated';
 import ShareLinkButton from '../../organisms/ShareLink/ShareLinkButtonPresenter';
 import { useRouter } from 'next/router';
 import UpdateBook from './EditBook';
 import UserInfo from '../../organisms/UserInfo/UserInfo';
 import { Settings } from '@mui/icons-material';
-import SigninUser from '@/organisms/Signin/SigninUserContainer';
-import SignupUser from '@/organisms/Signup/SignupUser';
 
 const BookProfile = () => {
   const query = useUserQuery();

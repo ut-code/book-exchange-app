@@ -6,19 +6,12 @@ import {
   Box,
   Card,
   CardContent,
-  Link,
-  Button,
-  Snackbar,
-  IconButton,
 } from '@mui/material';
 
 import { useRouter } from 'next/router';
 import React from 'react';
-import { use, useState } from 'react';
 import { useBooksQuery } from '../book/query.generated';
 import { useBooksByUserIdQuery, useUserQuery } from './query.generated';
-import SignupUser from '@/organisms/Signup/SignupUser';
-import SigninUser from '@/organisms/Signin/SigninUserContainer';
 
 const UserProfile = () => {
   const router = useRouter();
@@ -28,11 +21,6 @@ const UserProfile = () => {
   if (!stringId) {
     return <div>Loading...</div>;
   }
-
-  const query = useUserQuery();
-
-  const booksQuery = useBooksQuery()
-  const books = booksQuery.data?.books
 
   const booksByUserIdQuery = useBooksByUserIdQuery({
     variables: {
@@ -59,6 +47,11 @@ const UserProfile = () => {
         {user && booksByUserId && 
           <Typography variant="h6" component="h1" gutterBottom>
             {user.username} さんは{booksByUserId.length}冊の本を持っています
+          </Typography>
+        }
+        {user && booksByUserId && booksByUserId.length === 0 && 
+          <Typography variant="h6" component="h1" gutterBottom>
+            {user.username} さんは本を持っていません
           </Typography>
         }
         {/* <SigninUser/> */}

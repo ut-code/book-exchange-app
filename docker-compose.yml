@@ -1,13 +1,13 @@
-version: "3"
+version: '3'
 services:
   book_exchange_app:
     image: postgres:12
-    command: ["postgres", "-c", "log_statement=all"]
+    command: ['postgres', '-c', 'log_statement=all']
     environment:
       - POSTGRES_USER=postgres_local_username
       - POSTGRES_PASSWORD=postgres_local_password
       - POSTGRES_DB=book_exchange_app
     ports:
-      - "48832:5432"
+      - '48832:5432'
     volumes:
       - ./docker-entrypoint-initdb.d/:/docker-entrypoint-initdb.d/

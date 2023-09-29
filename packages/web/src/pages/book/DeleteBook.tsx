@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import { useUsersQuery } from '../../pages/user/query.generated';
-import Books from './Books';
-import { BooksQuery, useBooksQuery, useCreateBookMutation, useDeleteBookMutation, useDeleteBooksMutation } from './query.generated';
-import { Checkbox, Button, List, ListItem, ListItemText, Divider, Container, Box } from '@mui/material';
+import { BooksQuery, useDeleteBooksMutation } from './query.generated';
+import { Checkbox, Button, List, ListItem, ListItemText, Divider, Box } from '@mui/material';
 
 
 type DeleteBookProps = {
