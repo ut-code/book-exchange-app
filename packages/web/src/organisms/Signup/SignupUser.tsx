@@ -44,7 +44,7 @@ export default function SignupUser() {
         value={name}
         onChange={(e) => setName(e.target.value)}
       />
-      <TextField
+      {/* <TextField
         variant="outlined"
         margin="normal"
         fullWidth
@@ -52,7 +52,7 @@ export default function SignupUser() {
         type="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-      />
+      /> */}
       <TextField
         variant="outlined"
         margin="normal"
@@ -62,7 +62,7 @@ export default function SignupUser() {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
       />
-      <Box mt={1.5}>
+      <Box mt={1.5} pb={2}>
         <Button variant="contained" color="primary" onClick={handleSignup}>
           Signup
         </Button>

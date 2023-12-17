@@ -29,13 +29,14 @@ const UserProfile = () => {
   })
   const booksByUserId = booksByUserIdQuery.data?.booksByUserId
   const user = booksByUserIdQuery.data?.booksByUserId[0]?.user
+  const isAuthenticated = !!user;
 
   return (
-    <Container>
+    <Container sx={{ bgcolor: 'black', width: '100%', minHeight: '100vh', margin: 0 }}>
       {user && (
-        <UserInfo user={user} isAuthenticated={false}/>
+        <UserInfo user={user} isAuthenticated={isAuthenticated}/>
       )}
-      <Box my={3}>
+      <Box py={3}>
         {booksByUserId?.map((book) => (
           <Card key={book.id} variant="outlined" style={{ marginBottom: '20px' }}>
             <CardContent>

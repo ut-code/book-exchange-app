@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
-import { useSigninUserMutation, useUsersQuery } from '../../pages/user/query.generated';
+import { useSigninUserMutation } from '../../pages/user/query.generated';
 import SigninUserPresenter from './SigninUserPresenter';
 
-export default function SigninUserContainer() {
+type SigninUserProps = {
+  refetchUser: () => void;
+}; 
+
+export default function SigninUserContainer({ refetchUser }: SigninUserProps) {
+
   const [signinUser] = useSigninUserMutation();
 
   const [name, setName] = useState('');
@@ -20,6 +25,7 @@ export default function SigninUserContainer() {
       });
       alert('signin success');
       localStorage.setItem('accessToken', response.data?.signinUser.accessToken ?? '');
+      await refetchUser();
     } catch (error) {
       alert('Error:' + error);
     }

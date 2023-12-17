@@ -8,19 +8,20 @@ import { useUserQuery } from './query.generated';
 import ShareLinkButton from '../../organisms/ShareLink/ShareLinkButtonPresenter';
 
 const UserPage = () => {
-  const query = useUserQuery();
-  const user = query.data?.user;
+  const {data, refetch} = useUserQuery();
+  const user = data?.user;
   const router = useRouter();
 
   return (
     <Container sx={{ bgcolor: 'black', width: '70%'}}>
-      <Box mt={2} display="flex" justifyContent="flex-end">
+      <Box mt={0} pt={2} display="flex" justifyContent="flex-end">
         <Button 
           variant="contained" 
           color="primary"
+          disabled={!user}
           onClick={() => router.push('/book')} 
         >
-          Go to Books Page
+          Books
         </Button>
       </Box>
       {!user && (
@@ -29,7 +30,7 @@ const UserPage = () => {
             ユーザー
           </Typography>
            <Box mt={3}>
-            <SigninUser />
+            <SigninUser refetchUser={refetch}/>
           </Box>
           <Divider variant="middle" style={{ margin: '20px 0' }} />
           <Box mt={3}>

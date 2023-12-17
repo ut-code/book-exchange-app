@@ -1,6 +1,5 @@
 import React from 'react';
-import { useUserQuery } from '../../pages/user/query.generated';
-import { Box, Card, CardHeader, Avatar, Alert } from '@mui/material';
+import { Card, CardHeader, Avatar } from '@mui/material';
 
 type UserInfoProps = {
   user: {
@@ -12,19 +11,14 @@ type UserInfoProps = {
 export default function UserInfo(props: UserInfoProps) {
 
   return (
-    <Box mt={2}>
-      {
-        <Card variant="outlined">
-          <CardHeader
-           style={{ height: 60 }}
-            avatar={
-              <Avatar>{props.user.username.charAt(0)}</Avatar>
-            }
-            title={`${props.user.username}`}
-            subheader={props.isAuthenticated ? "authenticated" : "public view"}
-          />         
-        </Card>
-      }
-    </Box>
+    <Card variant="outlined">
+      <CardHeader
+        avatar={
+          <Avatar>{props.user.username.charAt(0)}</Avatar>
+        }
+        title={`${props.user.username}`}
+        subheader={props.isAuthenticated ? "authenticated" : "public view"}
+      />         
+    </Card>
   );
 }

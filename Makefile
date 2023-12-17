@@ -1,26 +1,32 @@
-init: psql postgresql://postgres_local_username:postgres_local_password@localhost:48832/book_exchange_app < docker-entrypoint-initdb.d/init.sql
-	cd packages/server && npx prisma db push 
+up: 
+	docker-compose up
+	# psql postgresql://postgres_local_username:postgres_local_password@localhost:48832/book_exchange_app < docker-entrypoint-initdb.d/init.sql
 
-
-install/dependencies: server/install web/install 
+setup: server/install web/install 
+	npm install
 	npm ci
+	cd packages/server && npm run prisma:generate
 
 all: server/build web/build
 
-lint:
-	npm run lint
-
-lint/fix:
-	npm run lint-fix
+make dev: server/dev web/dev 
 
 server/dev:
-	cd packages/server && npm run dev
+	cd packages/server && npm install && npm run dev
 
 spellCheck:
 	npm run spellCheck
+
+lint:
+	npm install
+	npm run lint
+
+lint/fix:
+	npm install
+	npm run lint-fix
 	
 web/dev:
-	cd packages/web && npm run dev
+	cd packages/web && npm install && npm run dev
 
 server/build:
 	cd packages/server && npm run build

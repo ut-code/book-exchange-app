@@ -1,3 +1,4 @@
+import { env } from '@/common';
 import { UserQuery, useUserQuery } from '../../pages/user/query.generated';
 import {
   Container,
@@ -16,7 +17,7 @@ export type ShareLinkButtonProps = {
 
 const ShareLinkButtonPresenter = (props: ShareLinkButtonProps) => {
 
-  const link = `https://book-exchange-app.com/user/${props.user?.id}`
+  const link =  `${env.appUrl}/user/${props.user?.id}`
 
   const copyToClipboard = async () => {
     try {
@@ -31,7 +32,7 @@ const ShareLinkButtonPresenter = (props: ShareLinkButtonProps) => {
 
   return (
     <Container>
-      <Box pt={2} display="flex" justifyContent="center">
+      <Box py={2} display="flex" justifyContent="center">
         <Stack alignItems='center'>
           <Typography mb={2}>本の共有リンク発行</Typography>
           <Button onClick={copyToClipboard} disabled={props.isDisabled} variant="contained" color="primary">Copy Link</Button>

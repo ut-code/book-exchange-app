@@ -6,7 +6,7 @@ import ShareLinkButton from '../../organisms/ShareLink/ShareLinkButtonPresenter'
 import { useRouter } from 'next/router';
 import UpdateBook from './EditBook';
 import UserInfo from '../../organisms/UserInfo/UserInfo';
-import { Settings } from '@mui/icons-material';
+import { AccountCircle, Settings } from '@mui/icons-material';
 
 const BookProfile = () => {
   const query = useUserQuery();
@@ -21,28 +21,25 @@ const BookProfile = () => {
   const router = useRouter();
 
   return (
-    <Container sx={{ bgcolor: 'black', width: '70%' }}>
-      <Stack my={2} direction="row" justifyContent="space-between">
+    <Container sx={{ bgcolor: 'black', width: '100%', minHeight: '100vh' }}>
+      <Stack pt={2} direction="row" justifyContent="space-between">
         {user && (
           <UserInfo user={user} isAuthenticated={true}/>
         )}
-        <Box>
           <Button 
-            color="primary"
+            color={user ? "primary" : "inherit"}
+            disabled={!user}
             onClick={() => router.push('/user')} 
           >
-            <Settings sx={{color: "gray"}}/>
+            <AccountCircle sx={{color: user ? "gray" : "disabled"}}/>
           </Button>
-        </Box>
       </Stack>
       {user && (
-        <Box mt={5}>
+        <Box mt={4}>
           <CreateBook refetch={refetch}/>
           <Divider style={{margin: '16px 0'}}/>
           <UpdateBook books={reversedBooks} refetch={refetch}/>
           <Divider style={{margin: '16px 0'}}/>
-          {/* <DeleteBook books={books} refetch={refetch}/> */}
-          {/* <Divider style={{margin: '16px 0'}}/> */}
           <ShareLinkButton isDisabled={false} user={user}/>
         </Box>
       )}
