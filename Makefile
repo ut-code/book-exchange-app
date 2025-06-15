@@ -1,46 +1,59 @@
-up: 
+.PHONY: help up setup install dev build test lint clean db-init spellcheck
+.DEFAULT_GOAL := help
+
+help: ## Show this help message
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
+
+up: ## Start Docker containers
 	docker-compose up
-	# psql postgresql://postgres_local_username:postgres_local_password@localhost:48832/book_exchange_app < docker-entrypoint-initdb.d/init.sql
 
-setup: server/install web/install 
-	npm install
+setup: install ## Full project setup
+	npm run prisma:generate
+
+install: ## Install all dependencies
 	npm ci
-	cd packages/server && npm run prisma:generate
 
-all: server/build web/build
+dev: ## Start development servers
+	npm run dev
 
-make dev: server/dev web/dev 
+server-dev: ## Start server in development mode
+	npm run server:dev
 
-server/dev:
-	cd packages/server && npm install && npm run dev
+web-dev: ## Start web app in development mode
+	npm run web:dev
 
-spellCheck:
-	npm run spellCheck
+build: ## Build all packages
+	npm run build
 
-lint:
-	npm install
+server-build: ## Build server
+	npm run server:build
+
+web-build: ## Build web app
+	npm run web:build
+
+test: ## Run all tests
+	npm run test
+
+typecheck: ## Run type checking
+	npm run typecheck
+
+lint: ## Run linting
 	npm run lint
 
-lint/fix:
-	npm install
+lint-fix: ## Fix linting issues
 	npm run lint-fix
-	
-web/dev:
-	cd packages/web && npm install && npm run dev
 
-server/build:
-	cd packages/server && npm run build
+format: ## Format code
+	npm run format
 
-web/build:
-	cd packages/web && npm run build
+format-check: ## Check code formatting
+	npm run format:check
 
-server/install:
-	cd packages/server && npm ci
+spellcheck: ## Run spell checking
+	npm run spellCheck
 
-web/install:
-	cd packages/web && npm ci
+clean: ## Clean build artifacts and node_modules
+	npm run clean
 
-# DATABASE_URL="postgresql://postgres_local_username:postgres_local_password@localhost:48832/book_exchange_app"
-# データベースにサンプルデータを投入する
-db/init:
+db-init: ## Initialize database with sample data
 	psql postgresql://postgres_local_username:postgres_local_password@localhost:48832/book_exchange_app < sample_data.sql

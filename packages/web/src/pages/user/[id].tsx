@@ -18,15 +18,16 @@ const UserProfile = () => {
   const { id } = router.query;
   const stringId = typeof id === 'string' ? id : undefined;
   
+  const booksByUserIdQuery = useBooksByUserIdQuery({
+    variables: {
+      userId: stringId || ''
+    },
+    skip: !stringId
+  })
+  
   if (!stringId) {
     return <div>Loading...</div>;
   }
-
-  const booksByUserIdQuery = useBooksByUserIdQuery({
-    variables: {
-      userId: stringId
-    }
-  })
   const booksByUserId = booksByUserIdQuery.data?.booksByUserId
   const user = booksByUserIdQuery.data?.booksByUserId[0]?.user
   const isAuthenticated = !!user;

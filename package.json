@@ -1,13 +1,43 @@
 {
   "name": "book-exchange-app",
   "version": "1.0.0",
-  "description": "",
+  "description": "A book exchange application",
   "main": "index.js",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
   "scripts": {
+    "dev": "npm run dev --workspaces",
+    "build": "npm run build --workspaces",
+    "start": "npm run start --workspaces",
+    "test": "npm run test --workspaces --if-present",
+    "test:watch": "npm run test:watch --workspaces --if-present",
+    "test:coverage": "npm run test:cov --workspaces --if-present",
     "lint": "eslint **/*.{js,ts,tsx,graphql} . --max-warnings 0",
     "lint-fix": "eslint **/*.{js,ts,tsx,graphql} . --fix",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "format": "prettier --write \"**/*.{js,ts,tsx,json,md,yml,yaml}\"",
+    "format:check": "prettier --check \"**/*.{js,ts,tsx,json,md,yml,yaml}\"",
     "spellCheck": "cspell lint --no-progress --relative --show-context **/*.{js,ts,tsx} .",
-    "prepare": "husky install"
+    "clean": "rimraf node_modules packages/*/node_modules packages/*/dist packages/*/.next packages/*/coverage",
+    "prepare": "husky install",
+    "server:dev": "npm run dev -w packages/server",
+    "server:build": "npm run build -w packages/server",
+    "server:test": "npm run test -w packages/server",
+    "web:dev": "npm run dev -w packages/web",
+    "web:build": "npm run build -w packages/web",
+    "web:test": "npm run test -w packages/web --if-present",
+    "prisma:generate": "npm run prisma:generate -w packages/server",
+    "prisma:migrate": "npm run prisma:migrate -w packages/server",
+    "prisma:studio": "npm run prisma:studio -w packages/server",
+    "prisma:seed": "npm run prisma:seed -w packages/server",
+    "graphql:codegen": "npm run generate -w packages/web",
+    "graphql:codegen:watch": "npm run graphql:codegen:watch -w packages/web"
   },
   "repository": {
     "type": "git",
