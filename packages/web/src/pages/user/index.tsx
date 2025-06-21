@@ -1,4 +1,4 @@
-import { Container, Typography, Box, Divider, Button, Stack } from '@mui/material';
+import { Typography, Box, Divider, Button, Stack, Card, CardContent } from '@mui/material';
 import { useRouter } from 'next/router';
 import React from 'react';
 import SigninUser from '../../organisms/Signin/SigninUserContainer';
@@ -6,84 +6,85 @@ import SignupUser from '../../organisms/Signup/SignupUser';
 import SignoutUser from '../../organisms/Signout/SignoutUser';
 import { useUserQuery } from './query.generated';
 import ShareLinkButton from '../../organisms/ShareLink/ShareLinkButtonPresenter';
+import { AppLayout } from '../../components/Layout';
 
 const UserPage = () => {
   const {data, refetch} = useUserQuery();
   const user = data?.user;
   const router = useRouter();
 
+  const breadcrumbs = [
+    { label: 'ホーム', href: '/' },
+    { label: 'プロフィール' },
+  ];
+
   return (
-    <Container sx={{ bgcolor: 'black', width: '70%'}}>
-      <Box mt={0} pt={2} display="flex" justifyContent="flex-end">
-        <Button 
-          variant="contained" 
-          color="primary"
-          disabled={!user}
-          onClick={() => router.push('/book')} 
-        >
-          Home
-        </Button>
-      </Box>
+    <AppLayout title="プロフィール" breadcrumbs={breadcrumbs}>
       {!user && (
-        <Box mt={2}>
+        <Box>
           <Typography variant="h4" component="h1" gutterBottom>
-            ユーザー
+            ユーザー認証
           </Typography>
-           <Box mt={3}>
-            <SigninUser refetchUser={refetch}/>
-          </Box>
-          <Divider variant="middle" style={{ margin: '20px 0' }} />
-          <Box mt={3}>
-            <SignupUser />
-          </Box>
+          <Stack spacing={3}>
+            <Card>
+              <CardContent>
+                <Typography variant="h6" gutterBottom>
+                  サインイン
+                </Typography>
+                <SigninUser refetchUser={refetch}/>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent>
+                <Typography variant="h6" gutterBottom>
+                  新規ユーザー登録
+                </Typography>
+                <SignupUser />
+              </CardContent>
+            </Card>
+          </Stack>
         </Box>
       )}
       {user && (
         <Box>
-          <Divider variant="middle" style={{ margin: '20px 0' }} />
-          <Box my={2}>
-            <Typography variant="h5" component="h2" gutterBottom sx={{ color: 'white', mb: 3 }}>
-              ユーザー機能
-            </Typography>
-            <Stack spacing={2} direction={{ xs: 'column', sm: 'row' }}>
-              <Button 
-                variant="outlined"
-                onClick={() => router.push('/user/Users')}
-                sx={{ 
-                  color: 'white',
-                  borderColor: 'white',
-                  '&:hover': {
-                    borderColor: 'gray',
-                    backgroundColor: 'rgba(255, 255, 255, 0.1)'
-                  }
-                }}
-              >
-                全ユーザー一覧
-              </Button>
-              <Button 
-                variant="outlined"
-                onClick={() => router.push('/user/me')}
-                sx={{ 
-                  color: 'white',
-                  borderColor: 'white',
-                  '&:hover': {
-                    borderColor: 'gray',
-                    backgroundColor: 'rgba(255, 255, 255, 0.1)'
-                  }
-                }}
-              >
-                マイプロフィール
-              </Button>
-            </Stack>
-          </Box>
-          <Divider variant="middle" style={{ margin: '20px 0' }} />
-          <Box my={2}>
-            <SignoutUser/>
-          </Box>
-          <ShareLinkButton isDisabled={false} user={user}/>
+          <Typography variant="h4" component="h1" gutterBottom>
+            プロフィール
+          </Typography>
+          
+          <Stack spacing={3}>
+            <Card>
+              <CardContent>
+                <Typography variant="h6" component="h2" gutterBottom>
+                  プロフィール管理
+                </Typography>
+                <Stack spacing={2} direction={{ xs: 'column', sm: 'row' }}>
+                  <Button 
+                    variant="contained"
+                    onClick={() => router.push('/user/me')}
+                  >
+                    マイプロフィール
+                  </Button>
+                </Stack>
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardContent>
+                <Typography variant="h6" component="h2" gutterBottom>
+                  設定
+                </Typography>
+                <Stack spacing={2}>
+                  <ShareLinkButton isDisabled={false} user={user}/>
+                  <Box>
+                    <SignoutUser/>
+                  </Box>
+                </Stack>
+              </CardContent>
+            </Card>
+          </Stack>
         </Box>
       )}
-    </Container>
+    </AppLayout>
   );
 }
 

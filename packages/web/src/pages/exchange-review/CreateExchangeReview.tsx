@@ -13,7 +13,7 @@ import {
   Divider,
 } from '@mui/material';
 import { useMutation } from '@apollo/client';
-import { CREATE_EXCHANGE_REVIEW } from './query.graphql';
+import { useCreateExchangeReviewMutation } from './query.generated';
 import { useRouter } from 'next/router';
 
 interface CreateExchangeReviewProps {
@@ -41,7 +41,7 @@ export const CreateExchangeReview: React.FC<CreateExchangeReviewProps> = ({
   const [wasSmooth, setWasSmooth] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
 
-  const [createExchangeReview, { loading }] = useMutation(CREATE_EXCHANGE_REVIEW, {
+  const [createExchangeReview, { loading }] = useCreateExchangeReviewMutation({
     onCompleted: () => {
       onSuccess?.();
     },

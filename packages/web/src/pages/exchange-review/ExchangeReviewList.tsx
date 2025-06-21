@@ -11,16 +11,15 @@ import {
   Stack,
 } from '@mui/material';
 import { useQuery } from '@apollo/client';
-import { GET_EXCHANGE_REVIEWS_BY_USER } from './query.graphql';
-import { format } from 'date-fns';
-import { ja } from 'date-fns/locale';
+import { useGetExchangeReviewsByUserQuery } from './query.generated';
+// Removed date-fns dependency
 
 interface ExchangeReviewListProps {
   userId: string;
 }
 
 export const ExchangeReviewList: React.FC<ExchangeReviewListProps> = ({ userId }) => {
-  const { data, loading, error } = useQuery(GET_EXCHANGE_REVIEWS_BY_USER, {
+  const { data, loading, error } = useGetExchangeReviewsByUserQuery({
     variables: { userId },
   });
 
@@ -93,7 +92,7 @@ export const ExchangeReviewList: React.FC<ExchangeReviewListProps> = ({ userId }
                       {review.reviewer.username}
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
-                      {format(new Date(review.createdAt), 'yyyy年MM月dd日', { locale: ja })}
+                      {new Date(review.createdAt).toLocaleDateString('ja-JP')}
                     </Typography>
                   </Box>
                 </Box>

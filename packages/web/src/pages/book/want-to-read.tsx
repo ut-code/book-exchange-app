@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import {
-  Container,
   Typography,
   Card,
   CardContent,
@@ -8,13 +7,12 @@ import {
   Grid,
   Box,
   Chip,
-  IconButton,
   Button,
 } from '@mui/material';
-import { ArrowBack as ArrowBackIcon } from '@mui/icons-material';
 import { useRouter } from 'next/router';
 import { useMyWantToReadListQuery } from './wantToRead.generated';
 import WantToReadButton from '../../components/WantToReadButton';
+import { AppLayout } from '../../components/Layout';
 
 const WantToReadList: React.FC = () => {
   const router = useRouter();
@@ -23,13 +21,15 @@ const WantToReadList: React.FC = () => {
     errorPolicy: 'all',
   });
 
-  const handleGoBack = () => {
-    router.push('/book');
-  };
-
   const handleGoToBookTemplates = () => {
     router.push('/book/templates');
   };
+
+  const breadcrumbs = [
+    { label: 'ホーム', href: '/' },
+    { label: '本の管理', href: '/book' },
+    { label: '読みたい本リスト' },
+  ];
 
   // Refetch data when component mounts or becomes visible
   useEffect(() => {
@@ -44,44 +44,38 @@ const WantToReadList: React.FC = () => {
 
     // Refetch when page becomes visible
     document.addEventListener('visibilitychange', handleVisibilityChange);
-    window.addEventListener('focus', () => refetch());
+    const handleWindowFocus = () => refetch();
+    window.addEventListener('focus', handleWindowFocus);
 
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
-      window.removeEventListener('focus', refetch);
+      window.removeEventListener('focus', handleWindowFocus);
     };
   }, [refetch]);
 
   if (loading) {
     return (
-      <Container maxWidth="lg" sx={{ py: 4 }}>
+      <AppLayout title="読みたい本リスト" breadcrumbs={breadcrumbs} showBackButton>
         <Typography>読み込み中...</Typography>
-      </Container>
+      </AppLayout>
     );
   }
 
   if (error) {
     return (
-      <Container maxWidth="lg" sx={{ py: 4 }}>
+      <AppLayout title="読みたい本リスト" breadcrumbs={breadcrumbs} showBackButton>
         <Typography color="error">
           エラーが発生しました: {error.message}
         </Typography>
-      </Container>
+      </AppLayout>
     );
   }
 
   const wantToReadList = data?.myWantToReadList || [];
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
-        <IconButton onClick={handleGoBack} sx={{ mr: 2 }}>
-          <ArrowBackIcon />
-        </IconButton>
-        <Typography variant="h4" component="h1">
-          読みたい本リスト
-        </Typography>
-      </Box>
+    <AppLayout title="読みたい本リスト" breadcrumbs={breadcrumbs} showBackButton>
+      <Box>
 
       {wantToReadList.length === 0 ? (
         <Box sx={{ textAlign: 'center', py: 8 }}>
@@ -173,7 +167,8 @@ const WantToReadList: React.FC = () => {
           </Grid>
         </>
       )}
-    </Container>
+      </Box>
+    </AppLayout>
   );
 };
 

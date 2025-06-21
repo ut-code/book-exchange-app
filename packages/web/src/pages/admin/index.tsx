@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-  Container,
   Typography,
   Grid,
   Card,
@@ -25,7 +24,6 @@ import {
   DialogActions,
   TextField,
   Alert,
-  Divider,
   CircularProgress,
 } from '@mui/material';
 import {
@@ -41,6 +39,7 @@ import {
 } from '@mui/icons-material';
 import { useRouter } from 'next/router';
 import { useGetAdminStatsQuery, useAdminDeleteBookMutation, useAdminUpdateBookMutation, useAdminDeleteBookTemplateMutation, useAdminUpdateBookTemplateMutation, useAdminDeleteUserMutation, useAdminUpdateUserMutation } from './query.generated';
+import { AppLayout } from '../../components/Layout';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -227,23 +226,28 @@ const AdminDashboard: React.FC = () => {
     }
   };
 
+  const breadcrumbs = [
+    { label: 'ホーム', href: '/' },
+    { label: '管理画面' },
+  ];
+
   if (loading) {
     return (
-      <Container maxWidth="lg" sx={{ py: 4 }}>
+      <AppLayout title="管理画面" breadcrumbs={breadcrumbs}>
         <Box display="flex" justifyContent="center">
           <CircularProgress />
         </Box>
-      </Container>
+      </AppLayout>
     );
   }
 
   if (error) {
     return (
-      <Container maxWidth="lg" sx={{ py: 4 }}>
+      <AppLayout title="管理画面" breadcrumbs={breadcrumbs}>
         <Alert severity="error">
           エラーが発生しました: {error.message}
         </Alert>
-      </Container>
+      </AppLayout>
     );
   }
 
@@ -260,11 +264,8 @@ const AdminDashboard: React.FC = () => {
   ];
 
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
+    <AppLayout title="管理画面" breadcrumbs={breadcrumbs}>
       <Box sx={{ mb: 4 }}>
-        <Typography variant="h4" gutterBottom>
-          管理画面
-        </Typography>
         <Typography variant="body1" color="text.secondary">
           本交換アプリケーションの管理コンソール
         </Typography>
@@ -933,7 +934,7 @@ const AdminDashboard: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
-    </Container>
+    </AppLayout>
   );
 };
 

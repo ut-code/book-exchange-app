@@ -5,6 +5,11 @@ import { CreateExchangeReviewInput, UpdateExchangeReviewInput } from './exchange
 import { TrustScoreService } from '../../../services/trustScore.service';
 import { randomUUID } from 'crypto';
 
+function isValidUUID(uuid: string): boolean {
+  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  return uuidRegex.test(uuid);
+}
+
 @Resolver(() => ExchangeReview)
 export class ExchangeReviewResolver {
   constructor(
@@ -17,6 +22,16 @@ export class ExchangeReviewResolver {
     @Args('input') input: CreateExchangeReviewInput,
     @Args('reviewerUserId') reviewerUserId: string,
   ): Promise<ExchangeReview> {
+    if (!isValidUUID(reviewerUserId)) {
+      throw new Error('Invalid reviewerUserId format. Expected a valid UUID.');
+    }
+    if (!isValidUUID(input.exchangeRequestId)) {
+      throw new Error('Invalid exchangeRequestId format. Expected a valid UUID.');
+    }
+    if (!isValidUUID(input.reviewedUserId)) {
+      throw new Error('Invalid reviewedUserId format. Expected a valid UUID.');
+    }
+
     const existingReview = await this.prisma.exchangeReview.findUnique({
       where: {
         exchangeRequestId_reviewerUserId: {
@@ -66,6 +81,13 @@ export class ExchangeReviewResolver {
     @Args('input') input: UpdateExchangeReviewInput,
     @Args('reviewerUserId') reviewerUserId: string,
   ): Promise<ExchangeReview> {
+    if (!isValidUUID(input.id)) {
+      throw new Error('Invalid id format. Expected a valid UUID.');
+    }
+    if (!isValidUUID(reviewerUserId)) {
+      throw new Error('Invalid reviewerUserId format. Expected a valid UUID.');
+    }
+
     const existingReview = await this.prisma.exchangeReview.findUnique({
       where: { id: input.id },
     });
@@ -98,6 +120,10 @@ export class ExchangeReviewResolver {
   async getExchangeReviewsByExchangeRequest(
     @Args('exchangeRequestId') exchangeRequestId: string,
   ): Promise<ExchangeReview[]> {
+    if (!isValidUUID(exchangeRequestId)) {
+      throw new Error('Invalid exchangeRequestId format. Expected a valid UUID.');
+    }
+
     return await this.prisma.exchangeReview.findMany({
       where: {
         exchangeRequestId,
@@ -117,6 +143,10 @@ export class ExchangeReviewResolver {
   async getExchangeReviewsByUser(
     @Args('userId') userId: string,
   ): Promise<ExchangeReview[]> {
+    if (!isValidUUID(userId)) {
+      throw new Error('Invalid userId format. Expected a valid UUID.');
+    }
+
     return await this.prisma.exchangeReview.findMany({
       where: {
         reviewedUserId: userId,
@@ -136,6 +166,10 @@ export class ExchangeReviewResolver {
   async getExchangeReview(
     @Args('id') id: string,
   ): Promise<ExchangeReview | null> {
+    if (!isValidUUID(id)) {
+      throw new Error('Invalid id format. Expected a valid UUID.');
+    }
+
     return await this.prisma.exchangeReview.findUnique({
       where: { id },
       include: {
@@ -151,6 +185,13 @@ export class ExchangeReviewResolver {
     @Args('id') id: string,
     @Args('reviewerUserId') reviewerUserId: string,
   ): Promise<boolean> {
+    if (!isValidUUID(id)) {
+      throw new Error('Invalid id format. Expected a valid UUID.');
+    }
+    if (!isValidUUID(reviewerUserId)) {
+      throw new Error('Invalid reviewerUserId format. Expected a valid UUID.');
+    }
+
     const existingReview = await this.prisma.exchangeReview.findUnique({
       where: { id },
     });

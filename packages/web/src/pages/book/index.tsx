@@ -1,12 +1,12 @@
-import { Container, Divider, Box, Button, Stack, Typography } from '@mui/material';
+import { Divider, Box, Button, Stack, Typography, Card, CardContent, Grid } from '@mui/material';
 import { useUserQuery } from '../user/query.generated';
 import CreateBook from './CreateBook';
 import { useBooksQuery } from './query.generated';
 import ShareLinkButton from '../../organisms/ShareLink/ShareLinkButtonPresenter';
 import { useRouter } from 'next/router';
 import UpdateBook from './EditBook';
-import UserInfo from '../../organisms/UserInfo/UserInfo';
-import { AccountCircle, Settings, LibraryBooks, People, BookmarkAdd, AdminPanelSettings } from '@mui/icons-material';
+import { LibraryBooks, People, BookmarkAdd, AdminPanelSettings, Add } from '@mui/icons-material';
+import { AppLayout } from '../../components/Layout';
 
 const BookProfile = () => {
   const query = useUserQuery();
@@ -20,98 +20,129 @@ const BookProfile = () => {
   const reversedBooks = [...books].reverse();
   const router = useRouter();
 
+  const breadcrumbs = [
+    { label: 'ホーム', href: '/' },
+    { label: '本の管理' },
+  ];
+
   return (
-    <Container sx={{ bgcolor: 'black', width: '100%', minHeight: '100vh' }}>
-      <Stack pt={2} direction="row" justifyContent="space-between">
-        {user && (
-          <UserInfo user={user} isAuthenticated={true}/>
-        )}
-          <Button 
-            color={user ? "primary" : "inherit"}
-            disabled={!user}
-            onClick={() => router.push('/user')} 
-          >
-            <AccountCircle sx={{color: user ? "gray" : "disabled"}}/>
-          </Button>
-      </Stack>
+    <AppLayout title="本の管理" breadcrumbs={breadcrumbs}>
       {user && (
-        <Box mt={4}>
-          <Box mb={3}>
-            <Typography variant="h6" sx={{ color: 'white', mb: 2 }}>
-              機能メニュー
-            </Typography>
-            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
-              <Button
-                variant="outlined"
-                startIcon={<LibraryBooks />}
-                onClick={() => router.push('/book/templates')}
-                sx={{ 
-                  color: 'white',
-                  borderColor: 'white',
-                  '&:hover': {
-                    borderColor: 'gray',
-                    backgroundColor: 'rgba(255, 255, 255, 0.1)'
-                  }
-                }}
-              >
-                本のテンプレート一覧
-              </Button>
-              <Button
-                variant="outlined"
-                startIcon={<BookmarkAdd />}
-                onClick={() => router.push('/book/want-to-read')}
-                sx={{ 
-                  color: 'white',
-                  borderColor: 'white',
-                  '&:hover': {
-                    borderColor: 'gray',
-                    backgroundColor: 'rgba(255, 255, 255, 0.1)'
-                  }
-                }}
-              >
-                読みたい本リスト
-              </Button>
-              <Button
-                variant="outlined"
-                startIcon={<People />}
-                onClick={() => router.push('/user/Users')}
-                sx={{ 
-                  color: 'white',
-                  borderColor: 'white',
-                  '&:hover': {
-                    borderColor: 'gray',
-                    backgroundColor: 'rgba(255, 255, 255, 0.1)'
-                  }
-                }}
-              >
-                全ユーザー一覧
-              </Button>
-              <Button
-                variant="outlined"
-                startIcon={<AdminPanelSettings />}
-                onClick={() => router.push('/admin')}
-                sx={{ 
-                  color: 'white',
-                  borderColor: 'white',
-                  '&:hover': {
-                    borderColor: 'gray',
-                    backgroundColor: 'rgba(255, 255, 255, 0.1)'
-                  }
-                }}
-              >
-                管理画面
-              </Button>
-            </Stack>
-          </Box>
-          <Divider style={{margin: '16px 0'}}/>
-          <CreateBook refetch={refetch}/>
-          <Divider style={{margin: '16px 0'}}/>
-          <UpdateBook books={reversedBooks} refetch={refetch}/>
-          <Divider style={{margin: '16px 0'}}/>
-          <ShareLinkButton isDisabled={false} user={user}/>
+        <Box>
+          <Stack spacing={3}>
+            <Card>
+              <CardContent>
+                <Typography variant="h6" gutterBottom>
+                  機能メニュー
+                </Typography>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={6} md={3}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      startIcon={<Add />}
+                      onClick={() => {
+                        const createBookElement = document.getElementById('create-book-section');
+                        if (createBookElement) {
+                          createBookElement.scrollIntoView({ behavior: 'smooth' });
+                        }
+                      }}
+                      fullWidth
+                    >
+                      本の追加
+                    </Button>
+                  </Grid>
+                  <Grid item xs={12} sm={6} md={3}>
+                    <Button
+                      variant="outlined"
+                      startIcon={<LibraryBooks />}
+                      onClick={() => router.push('/book/templates')}
+                      fullWidth
+                    >
+                      本のテンプレート一覧
+                    </Button>
+                  </Grid>
+                  <Grid item xs={12} sm={6} md={3}>
+                    <Button
+                      variant="outlined"
+                      startIcon={<BookmarkAdd />}
+                      onClick={() => router.push('/book/want-to-read')}
+                      fullWidth
+                    >
+                      読みたい本リスト
+                    </Button>
+                  </Grid>
+                  <Grid item xs={12} sm={6} md={3}>
+                    <Button
+                      variant="outlined"
+                      startIcon={<People />}
+                      onClick={() => router.push('/user/Users')}
+                      fullWidth
+                    >
+                      全ユーザー一覧
+                    </Button>
+                  </Grid>
+                  <Grid item xs={12} sm={6} md={3}>
+                    <Button
+                      variant="outlined"
+                      startIcon={<AdminPanelSettings />}
+                      onClick={() => router.push('/admin')}
+                      fullWidth
+                    >
+                      管理画面
+                    </Button>
+                  </Grid>
+                </Grid>
+              </CardContent>
+            </Card>
+
+            <Card id="create-book-section">
+              <CardContent>
+                <Typography variant="h6" gutterBottom>
+                  本の追加
+                </Typography>
+                <CreateBook refetch={refetch}/>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent>
+                <Typography variant="h6" gutterBottom>
+                  本の編集・管理
+                </Typography>
+                <UpdateBook books={reversedBooks} refetch={refetch}/>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent>
+                <ShareLinkButton isDisabled={false} user={user}/>
+              </CardContent>
+            </Card>
+          </Stack>
         </Box>
       )}
-    </Container>
+      {!user && (
+        <Card>
+          <CardContent>
+            <Typography variant="h6" gutterBottom>
+              ログインが必要です
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              本の管理機能を使用するには、ログインしてください。
+            </Typography>
+            <Box mt={2}>
+              <Button 
+                variant="contained"
+                onClick={() => router.push('/user')}
+              >
+                ログインページへ
+              </Button>
+            </Box>
+          </CardContent>
+        </Card>
+      )}
+    </AppLayout>
   );
 };
 

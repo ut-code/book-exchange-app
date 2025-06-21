@@ -16,6 +16,7 @@ import { Close as CloseIcon, Add as AddIcon } from '@mui/icons-material';
 import { CreateExchangeReview } from './CreateExchangeReview';
 import { ExchangeReviewList } from './ExchangeReviewList';
 import { useRouter } from 'next/router';
+import { AppLayout } from '../../components/Layout';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -57,8 +58,13 @@ export default function ExchangeReviewPage(): JSX.Element {
     router.reload();
   };
 
+  const breadcrumbs = [
+    { label: 'ホーム', href: '/' },
+    { label: '交換レビュー' },
+  ];
+
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
+    <AppLayout title="交換レビュー" breadcrumbs={breadcrumbs}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
         <Typography variant="h4" component="h1">
           交換レビュー
@@ -118,6 +124,6 @@ export default function ExchangeReviewPage(): JSX.Element {
           />
         </DialogContent>
       </Dialog>
-    </Container>
+    </AppLayout>
   );
 }
