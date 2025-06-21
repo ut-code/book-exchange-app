@@ -2,18 +2,86 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type ExchangeRequest {
+type TrustReview {
   id: ID!
+  rating: Float!
+  comment: String
+  reviewType: TrustReviewType!
   createdAt: Timestamp!
   updatedAt: Timestamp!
-  requesterUserId: String!
-  requesterUser: User!
+  reviewerUser: User!
+  reviewerUserId: String!
+  targetUser: User!
+  targetUserId: String!
+  exchangeRequest: ExchangeRequest
+  exchangeRequestId: String
+}
+
+enum TrustReviewType {
+  EXCHANGE_COMPLETION
+  COMMUNICATION_QUALITY
+  ITEM_CONDITION
+  PUNCTUALITY
+  GENERAL
 }
 
 """
 `Date` type as integer. Type represents date and time as number of milliseconds from start of UNIX epoch.
 """
 scalar Timestamp
+
+type ExchangeReview {
+  id: ID!
+  exchangeRequest: ExchangeRequest!
+  exchangeRequestId: String!
+  reviewer: User!
+  reviewerUserId: String!
+  reviewed: User!
+  reviewedUserId: String!
+
+  """Smoothness rating (1-5)"""
+  smoothness: Int!
+
+  """Communication rating (1-5)"""
+  communication: Int!
+
+  """Punctuality rating (1-5)"""
+  punctuality: Int!
+
+  """Book condition rating (1-5)"""
+  bookCondition: Int!
+
+  """Overall rating (1-5)"""
+  overallRating: Int!
+  comment: String
+
+  """Was the exchange smooth?"""
+  wasSmooth: Boolean!
+  createdAt: Timestamp!
+  updatedAt: Timestamp!
+}
+
+type ExchangeRequest {
+  id: ID!
+  createdAt: Timestamp!
+  updatedAt: Timestamp!
+  requesterUserId: String!
+  requesterUser: User!
+  addresseeUserId: String!
+  addresseeUser: User!
+  status: ExchangeStatus!
+  completedAt: Timestamp
+  trustReviews: [TrustReview!]!
+  exchangeReviews: [ExchangeReview!]!
+}
+
+enum ExchangeStatus {
+  PENDING
+  ACCEPTED
+  COMPLETED
+  CANCELLED
+  REJECTED
+}
 
 type Post {
   id: ID!
@@ -27,30 +95,217 @@ type Post {
   user: User!
 }
 
+type TrustScoreHistory {
+  id: ID!
+  oldScore: Float!
+  newScore: Float!
+  reason: String!
+  createdAt: Timestamp!
+  user: User!
+  userId: String!
+}
+
 type User {
   id: ID!
   username: String!
   password: String!
   hashedPassword: String!
+  trustScore: Float!
   posts: [Post!]!
   books: [Book!]!
   requesterExchangeRequest: [ExchangeRequest!]!
   addresseeExchangeRequest: [ExchangeRequest!]!
+  trustScoreHistory: [TrustScoreHistory!]!
+  receivedTrustReviews: [TrustReview!]!
+  givenTrustReviews: [TrustReview!]!
+}
+
+type BookTemplate {
+  id: ID!
+  isbn: String!
+  title: String!
+  author: String
+  publisher: String
+  publishedDate: String
+  pageCount: Int
+  language: String
+  categories: [String!]!
+  imageUrl: String
+  infoLink: String
+  description: String
+  createdAt: Timestamp!
+  updatedAt: Timestamp!
+  books: [Book!]!
 }
 
 type Book {
   id: ID!
   title: String!
   description: String!
+  condition: BookCondition!
+  isAvailable: Boolean!
+  notes: String
+  createdAt: Timestamp!
+  updatedAt: Timestamp!
   userId: String!
   user: User!
+  bookTemplateId: String
+  bookTemplate: BookTemplate
+}
+
+enum BookCondition {
+  EXCELLENT
+  VERY_GOOD
+  GOOD
+  FAIR
+  POOR
 }
 
 type AuthResponse {
   accessToken: String!
 }
 
+type BookMetadata {
+  isbn: String!
+  title: String!
+  author: String
+  publisher: String
+  publishedDate: String
+  pageCount: Int
+  language: String
+  categories: [String!]!
+  imageUrl: String
+  infoLink: String
+  description: String
+}
+
+type WantToRead {
+  id: ID!
+  userId: String!
+  bookTemplateId: String!
+  createdAt: Timestamp!
+  updatedAt: Timestamp!
+  user: User!
+  bookTemplate: BookTemplate!
+}
+
+type AdminUserBasic {
+  id: String!
+  username: String!
+}
+
+type AdminUserInfo {
+  id: String!
+  username: String!
+  createdAt: Timestamp!
+  updatedAt: Timestamp!
+  trustScore: Float!
+  bookCount: Int!
+  reviewCount: Int!
+}
+
+type AdminBookInfo {
+  id: String!
+  title: String!
+  description: String!
+  condition: BookCondition!
+  isAvailable: Boolean!
+  createdAt: Timestamp!
+  user: AdminUserBasic!
+}
+
+type AdminBookTemplateInfo {
+  id: String!
+  isbn: String!
+  title: String!
+  author: String
+  publisher: String
+  createdAt: Timestamp!
+  bookCount: Int!
+}
+
+type AdminStats {
+  totalUsers: Int!
+  totalBooks: Int!
+  totalBookTemplates: Int!
+  totalExchanges: Int!
+  totalReviews: Int!
+  totalTrustReviews: Int!
+  activeUsers: Int!
+  recentUsers: [AdminUserInfo!]!
+  recentBooks: [AdminBookInfo!]!
+  recentBookTemplates: [AdminBookTemplateInfo!]!
+}
+
+type ExchangeHistory {
+  id: ID!
+  requester: User!
+  requesterId: String!
+  recipient: User!
+  recipientId: String!
+  requestedBook: Book!
+  requestedBookId: String!
+  offeredBook: Book
+  offeredBookId: String
+  status: ExchangeHistoryStatus!
+  message: String
+  createdAt: Timestamp!
+  updatedAt: Timestamp!
+  completedAt: Timestamp
+}
+
+enum ExchangeHistoryStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  COMPLETED
+  CANCELLED
+}
+
+type AchievementBadge {
+  id: ID!
+  type: BadgeType!
+  name: String!
+  description: String!
+  iconUrl: String!
+  isActive: Boolean!
+  createdAt: Timestamp!
+  updatedAt: Timestamp!
+}
+
+enum BadgeType {
+  FIRST_EXCHANGE
+  FIVE_EXCHANGES
+  TEN_EXCHANGES
+  TWENTY_FIVE_EXCHANGES
+  FIFTY_EXCHANGES
+  HUNDRED_EXCHANGES
+  PERFECT_RATING
+  HELPFUL_REVIEWER
+  BOOK_COLLECTOR
+  EARLY_ADOPTER
+  COMMUNITY_HELPER
+}
+
+type UserAchievement {
+  id: ID!
+  userId: String!
+  badgeId: String!
+  badge: AchievementBadge!
+  earnedAt: Timestamp!
+  createdAt: Timestamp!
+}
+
 type Query {
+  isBookOwnedByUser(bookTemplateId: String!): Boolean!
+  getUserBookByTemplate(bookTemplateId: String!): Book
+  getUserTrustReviews(userId: String!): [TrustReview!]!
+  getUserTrustScoreHistory(userId: String!): [TrustScoreHistory!]!
+  getExchangeReviewsByExchangeRequest(exchangeRequestId: String!): [ExchangeReview!]!
+  getExchangeReviewsByUser(userId: String!): [ExchangeReview!]!
+  getExchangeReview(id: String!): ExchangeReview
+  myWantToReadList: [WantToRead!]!
+  isInWantToReadList(bookTemplateId: String!): Boolean!
   user: User!
   users: [User!]!
   draftsByUser(id: String!): [Post!]!
@@ -61,21 +316,58 @@ type Query {
   books: [Book!]!
   booksByUserId(userId: String!): [Book!]!
   allBooks: [Book!]!
+  getBookMetadataByISBN(isbn: String!): BookMetadata
+  searchBookMetadata(query: String!, limit: Float! = 20): [BookMetadata!]!
+  getAllPrePopulatedBooks(limit: Float! = 100): [BookMetadata!]!
+  getAllBookTemplates(limit: Float! = 100): [BookTemplate!]!
+  searchBookTemplates(query: String!, limit: Float! = 20): [BookTemplate!]!
+  getBookTemplateByISBN(isbn: String!): BookTemplate
+  getBookTemplateById(id: String!): BookTemplate
+  exchangeReviews: [ExchangeReview!]!
+  exchangeReviewsByExchangeRequest(exchangeRequestId: String!): [ExchangeReview!]!
+  exchangeReviewsByUser(userId: String!): [ExchangeReview!]!
+  exchangeReview(id: String!): ExchangeReview
+  getAdminStats: AdminStats!
+  getMyExchangeHistory: [ExchangeHistory!]!
+  getUserExchangeHistory(userId: String!): [ExchangeHistory!]!
+  getAllBadges: [AchievementBadge!]!
+  getMyAchievements: [UserAchievement!]!
+  getUserAchievements(userId: String!): [UserAchievement!]!
 }
 
 type Mutation {
   createUser(input: CreateUserInput!): User!
   deleteUser: User!
   signinUser(input: SigninUserInput!): AuthResponse!
+  adminDeleteUser(userId: String!): Boolean!
+  adminUpdateUser(userId: String!, input: AdminUpdateUserInput!): User!
   createPost(post: CreatePostInput!): Post!
   incrementPostViewCount(id: String!): Post!
   togglePublishPost(id: String!): Post!
   deletePost(id: String!): Post!
   createBook(input: CreateBookInput!): Book!
+  createBookFromIsbn(input: CreateBookFromIsbnInput!): Book!
+  createBookFromTemplate(input: CreateBookFromTemplateInput!): Book!
   createBooks(input: [CreateBookInput!]!): [Book!]!
   updateBook(id: String!, input: CreateBookInput!): Book!
-  deleteBook(id: String!): Book!
+  deleteBook(id: String!): Boolean!
+  adminDeleteBook(bookId: String!): Boolean!
+  adminUpdateBook(bookId: String!, input: CreateBookInput!): Book!
   deleteBooks(ids: [String!]!): [Book!]!
+  toggleBookOwnership(input: ToggleBookOwnershipInput!): Book
+  createTrustReview(createTrustReviewInput: CreateTrustReviewInput!): TrustReview!
+  updateTrustReview(updateTrustReviewInput: UpdateTrustReviewInput!): TrustReview!
+  deleteTrustReview(id: String!): Boolean!
+  populateBookDatabase: Boolean!
+  addBookToDatabase(isbn: String!): BookMetadata
+  createExchangeReview(input: CreateExchangeReviewInput!, reviewerUserId: String!): ExchangeReview!
+  updateExchangeReview(input: UpdateExchangeReviewInput!, reviewerUserId: String!): ExchangeReview!
+  deleteExchangeReview(id: String!, reviewerUserId: String!): Boolean!
+  addToWantToRead(input: AddToWantToReadInput!): WantToRead!
+  removeFromWantToRead(input: RemoveFromWantToReadInput!): Boolean!
+  adminUpdateBookTemplate(bookTemplateId: String!, input: UpdateBookTemplateInput!): BookTemplate!
+  adminDeleteBookTemplate(bookTemplateId: String!): Boolean!
+  checkAndAwardAchievements: Boolean!
 }
 
 input CreateUserInput {
@@ -88,6 +380,11 @@ input SigninUserInput {
   password: String!
 }
 
+input AdminUpdateUserInput {
+  username: String
+  trustScore: Float
+}
+
 input CreatePostInput {
   title: String!
   content: String!
@@ -96,4 +393,111 @@ input CreatePostInput {
 input CreateBookInput {
   title: String!
   description: String!
+  condition: BookCondition! = GOOD
+  isAvailable: Boolean! = true
+  notes: String
+  bookTemplateId: String
+}
+
+input CreateBookFromIsbnInput {
+  isbn: String!
+  description: String
+  condition: BookCondition! = GOOD
+  isAvailable: Boolean! = true
+  notes: String
+}
+
+input CreateBookFromTemplateInput {
+  bookTemplateId: String!
+  condition: BookCondition! = GOOD
+  isAvailable: Boolean! = true
+  notes: String
+  customDescription: String
+}
+
+input ToggleBookOwnershipInput {
+  bookTemplateId: String!
+}
+
+input CreateTrustReviewInput {
+  rating: Float!
+  comment: String
+  reviewType: TrustReviewType!
+  targetUserId: String!
+  exchangeRequestId: String
+}
+
+input UpdateTrustReviewInput {
+  id: String!
+  rating: Float
+  comment: String
+  reviewType: TrustReviewType
+}
+
+input CreateExchangeReviewInput {
+  exchangeRequestId: String!
+  reviewedUserId: String!
+
+  """Smoothness rating (1-5)"""
+  smoothness: Int!
+
+  """Communication rating (1-5)"""
+  communication: Int!
+
+  """Punctuality rating (1-5)"""
+  punctuality: Int!
+
+  """Book condition rating (1-5)"""
+  bookCondition: Int!
+
+  """Overall rating (1-5)"""
+  overallRating: Int!
+  comment: String
+
+  """Was the exchange smooth?"""
+  wasSmooth: Boolean! = true
+}
+
+input UpdateExchangeReviewInput {
+  id: String!
+
+  """Smoothness rating (1-5)"""
+  smoothness: Int
+
+  """Communication rating (1-5)"""
+  communication: Int
+
+  """Punctuality rating (1-5)"""
+  punctuality: Int
+
+  """Book condition rating (1-5)"""
+  bookCondition: Int
+
+  """Overall rating (1-5)"""
+  overallRating: Int
+  comment: String
+
+  """Was the exchange smooth?"""
+  wasSmooth: Boolean
+}
+
+input AddToWantToReadInput {
+  bookTemplateId: String!
+}
+
+input RemoveFromWantToReadInput {
+  bookTemplateId: String!
+}
+
+input UpdateBookTemplateInput {
+  title: String!
+  author: String
+  publisher: String
+  publishedDate: String
+  pageCount: Int
+  language: String
+  categories: [String!]
+  imageUrl: String
+  infoLink: String
+  description: String
 }

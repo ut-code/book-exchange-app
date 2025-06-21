@@ -8,51 +8,418 @@ datasource db {
 }
 
 model User {
-  id                       String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  username                 String            @unique
+  id                       String              @id @db.Uuid
+  username                 String              @unique
   password                 String
   hashedPassword           String
   deletedAt                DateTime?
-  posts                    Post[]
+  email                    String?
+  stripeCustomerId         String?
+  subscriptionExpiresAt    DateTime?
+  subscriptionId           String?
+  subscriptionStatus       SubscriptionStatus  @default(FREE)
+  profileVisibility        ProfileVisibility   @default(PUBLIC)
+  prefecture               String?
+  city                     String?
+  country                  String?             @default("Japan")
+  latitude                 Float?
+  longitude                Float?
+  locationVisibility       LocationVisibility  @default(FRIENDS_ONLY)
+  trustScore               Float               @default(5.0)
   books                    Book[]
-  requesterExchangeRequest ExchangeRequest[] @relation("RequesterExchangeRequest")
-  addresseeExchangeRequest ExchangeRequest[] @relation("AddresseeExchangeRequest")
+  addresseeExchangeRequest ExchangeRequest[]   @relation("AddresseeExchangeRequest")
+  requesterExchangeRequest ExchangeRequest[]   @relation("RequesterExchangeRequest")
+  exchangeReviewsReceived  ExchangeReview[]    @relation("ExchangeReviewReviewed")
+  exchangeReviewsGiven     ExchangeReview[]    @relation("ExchangeReviewReviewer")
+  posts                    Post[]
+  givenTrustReviews        TrustReview[]       @relation("TrustReviewReviewer")
+  receivedTrustReviews     TrustReview[]       @relation("TrustReviewTarget")
+  trustScoreHistory        TrustScoreHistory[]
+  wantToReads              WantToRead[]
+  exchangeHistoryRequester ExchangeHistory[]   @relation("ExchangeHistoryRequester")
+  exchangeHistoryRecipient ExchangeHistory[]   @relation("ExchangeHistoryRecipient")
+  userAchievements         UserAchievement[]
 
   @@map("users")
 }
 
 model Post {
-  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id        String   @id @db.Uuid
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   title     String
   content   String
   published Boolean  @default(false)
   viewCount Int      @default(0)
-  user      User     @relation(fields: [userId], references: [id])
   userId    String   @db.Uuid
+  user      User     @relation(fields: [userId], references: [id])
 
   @@map("posts")
 }
 
 model Book {
-  id          String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  title       String
-  description String
-  user        User   @relation(fields: [userId], references: [id])
-  userId      String @db.Uuid
+  id             String        @id @db.Uuid
+  title          String
+  description    String
+  userId         String        @db.Uuid
+  bookTemplateId String?       @db.Uuid
+  condition      BookCondition @default(GOOD)
+  createdAt      DateTime      @default(now())
+  isAvailable    Boolean       @default(true)
+  notes          String?
+  updatedAt      DateTime      @default(now()) @updatedAt
+  bookTemplate   BookTemplate? @relation(fields: [bookTemplateId], references: [id])
+  user                      User              @relation(fields: [userId], references: [id])
+  exchangeHistoryRequested  ExchangeHistory[] @relation("ExchangeHistoryRequestedBook")
+  exchangeHistoryOffered    ExchangeHistory[] @relation("ExchangeHistoryOfferedBook")
 
+  @@unique([userId, bookTemplateId])
   @@map("books")
 }
 
+model BookTemplate {
+  id            String   @id @db.Uuid
+  isbn          String   @unique
+  title         String
+  author        String?
+  publisher     String?
+  publishedDate String?
+  pageCount     Int?
+  language      String?
+  categories    String[]
+  imageUrl      String?
+  infoLink      String?
+  description   String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @default(now()) @updatedAt
+  books         Book[]
+  wantToReads   WantToRead[]
+
+  @@map("book_templates")
+}
+
+model WantToRead {
+  id             String       @id @db.Uuid
+  userId         String       @db.Uuid
+  bookTemplateId String       @db.Uuid
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bookTemplate   BookTemplate @relation(fields: [bookTemplateId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, bookTemplateId])
+  @@map("want_to_reads")
+}
+
 model ExchangeRequest {
-  id              String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  requesterUser   User     @relation("RequesterExchangeRequest", fields: [requesterUserId], references: [id])
-  requesterUserId String   @db.Uuid
-  addresseeUser   User     @relation("AddresseeExchangeRequest", fields: [addresseeUserId], references: [id])
-  addresseeUserId String   @db.Uuid
+  id              String           @id @db.Uuid
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  requesterUserId String           @db.Uuid
+  addresseeUserId String           @db.Uuid
+  completedAt     DateTime?
+  status          ExchangeStatus   @default(PENDING)
+  addresseeUser   User             @relation("AddresseeExchangeRequest", fields: [addresseeUserId], references: [id])
+  requesterUser   User             @relation("RequesterExchangeRequest", fields: [requesterUserId], references: [id])
+  exchangeReviews ExchangeReview[]
+  trustReviews    TrustReview[]
 
   @@map("exchange_requests")
+}
+
+model book_genres {
+  id      String @id @db.Uuid
+  bookId  String @db.Uuid
+  genreId String @db.Uuid
+
+  @@unique([bookId, genreId])
+}
+
+model book_ratings {
+  id        String   @id @db.Uuid
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime
+  userId    String   @db.Uuid
+  bookId    String   @db.Uuid
+
+  @@unique([userId, bookId])
+}
+
+model chats {
+  id          String     @id @db.Uuid
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime
+  bookId      String     @db.Uuid
+  requesterId String     @db.Uuid
+  ownerId     String     @db.Uuid
+  status      ChatStatus @default(ACTIVE)
+
+  @@unique([bookId, requesterId])
+}
+
+model friend_requests {
+  id         String              @id @db.Uuid
+  createdAt  DateTime            @default(now())
+  updatedAt  DateTime
+  senderId   String              @db.Uuid
+  receiverId String              @db.Uuid
+  status     FriendRequestStatus @default(PENDING)
+
+  @@unique([senderId, receiverId])
+}
+
+model friendships {
+  id        String   @id @db.Uuid
+  createdAt DateTime @default(now())
+  user1Id   String   @db.Uuid
+  user2Id   String   @db.Uuid
+
+  @@unique([user1Id, user2Id])
+}
+
+model genres {
+  id          String   @id @db.Uuid
+  name        String   @unique
+  nameJa      String?
+  description String?
+  parentId    String?  @db.Uuid
+  color       String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime
+}
+
+model likes {
+  id        String   @id @db.Uuid
+  createdAt DateTime @default(now())
+  userId    String   @db.Uuid
+  bookId    String   @db.Uuid
+
+  @@unique([userId, bookId])
+}
+
+model location_group_members {
+  id              String    @id @db.Uuid
+  userId          String    @db.Uuid
+  locationGroupId String    @db.Uuid
+  joinedAt        DateTime  @default(now())
+  role            GroupRole @default(MEMBER)
+
+  @@unique([userId, locationGroupId])
+}
+
+model location_groups {
+  id          String   @id @db.Uuid
+  name        String
+  description String?
+  prefecture  String?
+  city        String?
+  country     String   @default("Japan")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime
+}
+
+model messages {
+  id        String    @id @db.Uuid
+  createdAt DateTime  @default(now())
+  content   String
+  senderId  String    @db.Uuid
+  chatId    String    @db.Uuid
+  readAt    DateTime?
+}
+
+model subscriptions {
+  id                   String             @id @db.Uuid
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime
+  userId               String             @db.Uuid
+  stripeSubscriptionId String             @unique
+  stripePriceId        String
+  status               SubscriptionStatus
+  currentPeriodEnd     DateTime
+  cancelAtPeriodEnd    Boolean            @default(false)
+}
+
+model TrustReview {
+  id                String           @id @db.Uuid
+  rating            Float
+  comment           String?
+  reviewType        TrustReviewType
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  reviewerUserId    String           @db.Uuid
+  targetUserId      String           @db.Uuid
+  exchangeRequestId String?          @db.Uuid
+  exchangeRequest   ExchangeRequest? @relation(fields: [exchangeRequestId], references: [id])
+  reviewerUser      User             @relation("TrustReviewReviewer", fields: [reviewerUserId], references: [id])
+  targetUser        User             @relation("TrustReviewTarget", fields: [targetUserId], references: [id])
+
+  @@unique([reviewerUserId, targetUserId, exchangeRequestId])
+  @@map("trust_reviews")
+}
+
+model TrustScoreHistory {
+  id        String   @id @db.Uuid
+  oldScore  Float
+  newScore  Float
+  reason    String
+  createdAt DateTime @default(now())
+  userId    String   @db.Uuid
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@map("trust_score_history")
+}
+
+model ExchangeReview {
+  id                String          @id @db.Uuid
+  exchangeRequestId String          @db.Uuid
+  reviewerUserId    String          @db.Uuid
+  reviewedUserId    String          @db.Uuid
+  smoothness        Int
+  communication     Int
+  punctuality       Int
+  bookCondition     Int
+  overallRating     Int
+  comment           String?
+  wasSmooth         Boolean         @default(true)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  exchangeRequest   ExchangeRequest @relation(fields: [exchangeRequestId], references: [id])
+  reviewed          User            @relation("ExchangeReviewReviewed", fields: [reviewedUserId], references: [id])
+  reviewer          User            @relation("ExchangeReviewReviewer", fields: [reviewerUserId], references: [id])
+
+  @@unique([exchangeRequestId, reviewerUserId])
+  @@map("exchange_reviews")
+}
+
+enum ChatStatus {
+  ACTIVE
+  CLOSED
+  ARCHIVED
+}
+
+enum FriendRequestStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  CANCELLED
+}
+
+enum GroupRole {
+  ADMIN
+  MODERATOR
+  MEMBER
+}
+
+enum LocationVisibility {
+  PUBLIC
+  FRIENDS_ONLY
+  PRIVATE
+}
+
+enum ProfileVisibility {
+  PUBLIC
+  FRIENDS_ONLY
+  PRIVATE
+}
+
+enum SubscriptionStatus {
+  FREE
+  PREMIUM
+  CANCELLED
+  EXPIRED
+}
+
+enum TrustReviewType {
+  EXCHANGE_COMPLETION
+  COMMUNICATION_QUALITY
+  ITEM_CONDITION
+  PUNCTUALITY
+  GENERAL
+}
+
+enum BookCondition {
+  EXCELLENT
+  VERY_GOOD
+  GOOD
+  FAIR
+  POOR
+}
+
+enum ExchangeStatus {
+  PENDING
+  ACCEPTED
+  COMPLETED
+  CANCELLED
+  REJECTED
+}
+
+model ExchangeHistory {
+  id               String                 @id @db.Uuid
+  requesterId      String                 @db.Uuid
+  recipientId      String                 @db.Uuid
+  requestedBookId  String                 @db.Uuid
+  offeredBookId    String?                @db.Uuid
+  status           ExchangeHistoryStatus  @default(PENDING)
+  message          String?
+  createdAt        DateTime               @default(now())
+  updatedAt        DateTime               @updatedAt
+  completedAt      DateTime?
+  requester        User                   @relation("ExchangeHistoryRequester", fields: [requesterId], references: [id])
+  recipient        User                   @relation("ExchangeHistoryRecipient", fields: [recipientId], references: [id])
+  requestedBook    Book                   @relation("ExchangeHistoryRequestedBook", fields: [requestedBookId], references: [id])
+  offeredBook      Book?                  @relation("ExchangeHistoryOfferedBook", fields: [offeredBookId], references: [id])
+
+  @@map("exchange_history")
+}
+
+model AchievementBadge {
+  id               String            @id @db.Uuid
+  type             BadgeType         @unique
+  name             String
+  description      String
+  iconUrl          String
+  isActive         Boolean           @default(true)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  userAchievements UserAchievement[]
+
+  @@map("achievement_badges")
+}
+
+model UserAchievement {
+  id        String          @id @db.Uuid
+  userId    String          @db.Uuid
+  badgeId   String          @db.Uuid
+  earnedAt  DateTime        @default(now())
+  createdAt DateTime        @default(now())
+  user      User            @relation(fields: [userId], references: [id])
+  badge     AchievementBadge @relation(fields: [badgeId], references: [id])
+
+  @@unique([userId, badgeId])
+  @@map("user_achievements")
+}
+
+enum ExchangeHistoryStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  COMPLETED
+  CANCELLED
+}
+
+enum BadgeType {
+  FIRST_EXCHANGE
+  FIVE_EXCHANGES
+  TEN_EXCHANGES
+  TWENTY_FIVE_EXCHANGES
+  FIFTY_EXCHANGES
+  HUNDRED_EXCHANGES
+  PERFECT_RATING
+  HELPFUL_REVIEWER
+  BOOK_COLLECTOR
+  EARLY_ADOPTER
+  COMMUNITY_HELPER
 }

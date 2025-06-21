@@ -1,0 +1,87 @@
+query GetAdminStats {
+  getAdminStats {
+    totalUsers
+    totalBooks
+    totalBookTemplates
+    totalExchanges
+    totalReviews
+    totalTrustReviews
+    activeUsers
+    recentUsers {
+      id
+      username
+      createdAt
+      updatedAt
+      trustScore
+      bookCount
+      reviewCount
+    }
+    recentBooks {
+      id
+      title
+      description
+      condition
+      isAvailable
+      createdAt
+      user {
+        id
+        username
+      }
+    }
+    recentBookTemplates {
+      id
+      isbn
+      title
+      author
+      publisher
+      createdAt
+      bookCount
+    }
+  }
+}
+
+mutation AdminDeleteBook($bookId: String!) {
+  adminDeleteBook(bookId: $bookId)
+}
+
+mutation AdminUpdateBook($bookId: String!, $input: CreateBookInput!) {
+  adminUpdateBook(bookId: $bookId, input: $input) {
+    id
+    title
+    description
+    condition
+    isAvailable
+    createdAt
+    user {
+      id
+      username
+    }
+  }
+}
+
+mutation AdminDeleteBookTemplate($bookTemplateId: String!) {
+  adminDeleteBookTemplate(bookTemplateId: $bookTemplateId)
+}
+
+mutation AdminUpdateBookTemplate($bookTemplateId: String!, $input: UpdateBookTemplateInput!) {
+  adminUpdateBookTemplate(bookTemplateId: $bookTemplateId, input: $input) {
+    id
+    isbn
+    title
+    author
+    publisher
+    createdAt
+  }
+}
+
+mutation AdminDeleteUser($userId: String!) {
+  adminDeleteUser(userId: $userId)
+}
+
+mutation AdminUpdateUser($userId: String!, $input: AdminUpdateUserInput!) {
+  adminUpdateUser(userId: $userId, input: $input) {
+    id
+    username
+    trustScore
+  }
+}

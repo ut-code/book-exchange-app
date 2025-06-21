@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "postgres": {
+      "command": "mcp-server-postgres",
+      "args": [
+        "postgresql://postgres_beta_user:postgres_beta_password@localhost:48834/book_exchange_app_beta"
+      ],
+      "env": {}
+    }
+  }
+}

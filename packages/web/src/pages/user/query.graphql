@@ -2,6 +2,32 @@ query User {
   user {
     id
     username
+    trustScore
+  }
+}
+
+query MyProfile {
+  user {
+    id
+    username
+    trustScore
+    books {
+      id
+      title
+      description
+      condition
+      isAvailable
+    }
+    receivedTrustReviews {
+      id
+      rating
+      comment
+      reviewType
+      reviewerUser {
+        id
+        username
+      }
+    }
   }
 }
 
@@ -20,6 +46,7 @@ query BooksByUserId($userId: String!) {
     user {
       id
       username
+      trustScore
     }
   }
 }
@@ -40,6 +67,45 @@ mutation SigninUser($signinUserInput: SigninUserInput!) {
 mutation DeleteUser {
   deleteUser {
     id
+  }
+}
+
+
+query GetUserTrustReviews($userId: String!) {
+  getUserTrustReviews(userId: $userId) {
+    id
+    rating
+    comment
+    reviewType
+    createdAt
+    reviewerUser {
+      id
+      username
+    }
+  }
+}
+
+query GetUserTrustScoreHistory($userId: String!) {
+  getUserTrustScoreHistory(userId: $userId) {
+    id
+    oldScore
+    newScore
+    reason
+    createdAt
+  }
+}
+
+mutation CreateTrustReview($createTrustReviewInput: CreateTrustReviewInput!) {
+  createTrustReview(createTrustReviewInput: $createTrustReviewInput) {
+    id
+    rating
+    comment
+    reviewType
+    createdAt
+    targetUser {
+      id
+      username
+    }
   }
 }
 

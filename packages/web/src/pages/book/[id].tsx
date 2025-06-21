@@ -39,7 +39,11 @@ import {
   Timeline,
   FlashOn,
   Diamond,
-  Layers
+  Layers,
+  ArrowBack,
+  Home,
+  LibraryBooks,
+  People
 } from '@mui/icons-material';
 
 const Book = () => {
@@ -177,6 +181,66 @@ const Book = () => {
     }}>
       <Container maxWidth="xl" sx={{ py: 6, position: 'relative', zIndex: 1 }}>
         <Stack spacing={6}>
+          {/* Navigation Header */}
+          <Paper 
+            elevation={0}
+            sx={{ 
+              p: 2, 
+              borderRadius: 3,
+              background: `linear-gradient(135deg, ${alpha(theme.palette.background.paper, 0.9)} 0%, ${alpha(theme.palette.background.paper, 0.6)} 100%)`,
+              backdropFilter: 'blur(20px)',
+              border: `1px solid ${alpha(theme.palette.divider, 0.1)}`
+            }}
+          >
+            <Stack direction="row" alignItems="center" spacing={2}>
+              <IconButton
+                onClick={() => router.push('/book')}
+                sx={{
+                  backgroundColor: alpha(theme.palette.primary.main, 0.1),
+                  color: theme.palette.primary.main,
+                  '&:hover': {
+                    backgroundColor: theme.palette.primary.main,
+                    color: 'white',
+                    transform: 'scale(1.05)'
+                  }
+                }}
+              >
+                <ArrowBack />
+              </IconButton>
+              
+              <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 600 }}>
+                本の詳細
+              </Typography>
+              
+              <Stack direction="row" spacing={1}>
+                <Button
+                  variant="outlined"
+                  startIcon={<Home />}
+                  onClick={() => router.push('/book')}
+                  sx={{ borderRadius: 2 }}
+                >
+                  ホーム
+                </Button>
+                <Button
+                  variant="outlined"
+                  startIcon={<LibraryBooks />}
+                  onClick={() => router.push('/book/templates')}
+                  sx={{ borderRadius: 2 }}
+                >
+                  テンプレート
+                </Button>
+                <Button
+                  variant="outlined"
+                  startIcon={<People />}
+                  onClick={() => router.push('/user')}
+                  sx={{ borderRadius: 2 }}
+                >
+                  ユーザー
+                </Button>
+              </Stack>
+            </Stack>
+          </Paper>
+
           <Box sx={{ textAlign: 'center', mb: 4 }}>
             <Fade in timeout={800}>
               <Typography 

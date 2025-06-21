@@ -1,3 +1,3 @@
 export const env = {
-  appUrl: process.env.appUrl || 'http://localhost:3000',
+  appUrl: process.env.appUrl || 'http://localhost:3003',
 };

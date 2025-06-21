@@ -4,6 +4,7 @@ import { Post } from 'src/models/post';
 import { CreatePostInput } from './post.input';
 import { PrismaService } from 'src/services/prisma/prisma.service';
 import { PickPrimitive } from 'src/common/primitive';
+import { randomUUID } from 'crypto';
 
 @Resolver(Post)
 export class PostResolver {
@@ -15,6 +16,7 @@ export class PostResolver {
   ): Promise<PickPrimitive<Post>> {
     return this.prisma.post.create({
       data: {
+        id: randomUUID(),
         title: post.title,
         content: post.content,
         published: false,

@@ -6,7 +6,10 @@ import {
   Box,
   Card,
   CardContent,
+  Button,
+  Grid,
 } from '@mui/material';
+import { TrustScoreDisplay } from '../../components/TrustScore';
 
 import { useRouter } from 'next/router';
 import React from 'react';
@@ -37,6 +40,52 @@ const UserProfile = () => {
       {user && (
         <UserInfo user={user} isAuthenticated={isAuthenticated}/>
       )}
+      
+      {user && (
+        <Box py={2}>
+          <Card variant="outlined" style={{ marginBottom: '20px' }}>
+            <CardContent>
+              <Grid container spacing={2} alignItems="center">
+                <Grid item xs={12} sm={8}>
+                  <Typography variant="h6" gutterBottom>
+                    信頼スコア
+                  </Typography>
+                  <TrustScoreDisplay
+                    score={user.trustScore || 5.0}
+                    size="medium"
+                  />
+                </Grid>
+                <Grid item xs={12} sm={4}>
+                  <Button
+                    variant="outlined"
+                    fullWidth
+                    onClick={() => router.push(`/user/${stringId}/trust`)}
+                    sx={{ mb: 1 }}
+                  >
+                    信頼スコア詳細
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    fullWidth
+                    onClick={() => router.push(`/user/${stringId}/exchange-history`)}
+                    sx={{ mb: 1 }}
+                  >
+                    交換履歴
+                  </Button>
+                  <Button
+                    variant="outlined"
+                    fullWidth
+                    onClick={() => router.push(`/user/${stringId}/achievements`)}
+                  >
+                    実績バッジ
+                  </Button>
+                </Grid>
+              </Grid>
+            </CardContent>
+          </Card>
+        </Box>
+      )}
+      
       <Box py={3}>
         {booksByUserId?.map((book) => (
           <Card key={book.id} variant="outlined" style={{ marginBottom: '20px' }}>

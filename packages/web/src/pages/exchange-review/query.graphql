@@ -1,0 +1,129 @@
+mutation CreateExchangeReview($input: CreateExchangeReviewInput!, $reviewerUserId: String!) {
+  createExchangeReview(input: $input, reviewerUserId: $reviewerUserId) {
+    id
+    exchangeRequestId
+    reviewerUserId
+    reviewedUserId
+    smoothness
+    communication
+    punctuality
+    bookCondition
+    overallRating
+    comment
+    wasSmooth
+    createdAt
+    updatedAt
+    reviewer {
+      id
+      username
+    }
+    reviewed {
+      id
+      username
+    }
+  }
+}
+
+mutation UpdateExchangeReview($input: UpdateExchangeReviewInput!, $reviewerUserId: String!) {
+  updateExchangeReview(input: $input, reviewerUserId: $reviewerUserId) {
+    id
+    smoothness
+    communication
+    punctuality
+    bookCondition
+    overallRating
+    comment
+    wasSmooth
+    updatedAt
+  }
+}
+
+query GetExchangeReviewsByExchangeRequest($exchangeRequestId: String!) {
+  getExchangeReviewsByExchangeRequest(exchangeRequestId: $exchangeRequestId) {
+    id
+    exchangeRequestId
+    reviewerUserId
+    reviewedUserId
+    smoothness
+    communication
+    punctuality
+    bookCondition
+    overallRating
+    comment
+    wasSmooth
+    createdAt
+    updatedAt
+    reviewer {
+      id
+      username
+    }
+    reviewed {
+      id
+      username
+    }
+  }
+}
+
+query GetExchangeReviewsByUser($userId: String!) {
+  getExchangeReviewsByUser(userId: $userId) {
+    id
+    exchangeRequestId
+    reviewerUserId
+    reviewedUserId
+    smoothness
+    communication
+    punctuality
+    bookCondition
+    overallRating
+    comment
+    wasSmooth
+    createdAt
+    updatedAt
+    reviewer {
+      id
+      username
+    }
+    reviewed {
+      id
+      username
+    }
+    exchangeRequest {
+      id
+      status
+      createdAt
+      completedAt
+    }
+  }
+}
+
+query GetExchangeReview($id: String!) {
+  getExchangeReview(id: $id) {
+    id
+    exchangeRequestId
+    reviewerUserId
+    reviewedUserId
+    smoothness
+    communication
+    punctuality
+    bookCondition
+    overallRating
+    comment
+    wasSmooth
+    createdAt
+    updatedAt
+    reviewer {
+      id
+      username
+    }
+    reviewed {
+      id
+      username
+    }
+    exchangeRequest {
+      id
+      status
+      createdAt
+      completedAt
+    }
+  }
+}

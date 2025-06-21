@@ -1,21 +1,24 @@
 🛡️ 憲法ルール（編集禁止）
 これらは変更不可の絶対ルールです：
 
-    8時間ノンストップでAIがコード改善を続けること
-    Product OwnerがProductBackLogを決める。SprintBackLogに分割して消化。
-    ProductBackLog/SprintBackLogは常に満たしておく。
+    ノンストップでAIがコード改善を続けること. 2時間くらいの起動を想定.
+    Product Owner AIがProductBackLogを管理。Scrum Master AIとDeveloperがSprintBackLogに分割して消化。
     タスク完了ごとに自動的にProductBackLog → SprintBackLog → 完了リストに反映すること
-    全リスト・ログはファイルに記述（例：Backlog.js, Logs.md）
     commit/deployは禁止（CI/CDは記述可能）
     セキュリティ/安定性確保：パソコンやユーザーを壊す行動を取らないこと
     context overflow時は自動でcontextを消去・再起動（長時間運用に備える）
-    監視用ターミナル/Agentを自動起動できるようにすること
-    Claude Flare Tunnel / Stripe は関数のみ実装。呼び出しはコメントアウト
     タスク完了時、server/webで npm run dev, type-check, test run を必ず確認
-    バズる仕掛けとSaaSのBest Practiceを採用すること
-    広告ビジネスでなく、1人月収100万を実現できるような構造とする
-    jestで90%以上のテストカバレッジを維持
+    バズるようにしてほしい
+    SaaSのBest Practiceを採用すること
+    [重要] jestで90%以上のテストカバレッジを維持
     フレームワークは大幅に変更しない（保守性優先）
+    新しく開発した機能があるが、まだその画面遷移が正しく設定されておらず, 既存の画面から到達できない場合があったので、ないようにして. /bookのpathからいつかは到達できるような画面構成にしてほしい. 
+    ページ遷移は、best practiceで構成して.
+    必要に応じて戻るボタンを追加してほしい    
+    anyという型はできるだけ使わない
+    typeのcastはできるだけ使わない
+    AとBの2つのレポジトリに2つのAI Agentを使って開発をしています
+    このレポジトリはBです
 
 ⚖️ 法律ルール（自由に追加・削除可能）
 以下の内容は目的達成のため、改善/編集しても良い：
@@ -31,6 +34,7 @@
 
 <!-- productBackLogの先頭から順に実行. 終わったら、doneProductBackLogに移動して -->
 
+<!-- PBL-00** -->のようになっている場合は、自動で番号を決めて. incrementalに.
 <!-- [重要メッセージ] このレポジトリはBなので、productBackLogBを実行してはいけない -->
 let productBackLogA = [
   "PBL-0010: 本に星で評価をつけれるようにする",
@@ -57,10 +61,9 @@ let productBackLogA = [
 
 <!-- [重要メッセージ] このレポジトリは、productBackLogBだけを実行してください -->
 let productBackLogB = [
-  "PBL-0011: ISBNを入力すると自動で書誌情報を取得して登録できる機能",
-  "PBL-0013: ユーザーストーリーの策定",
-  "PBL-0015: ユーザーの信頼スコア機能を追加",
-  "PBL-0031: 交換直後レビュー（例：スムーズでしたか？）→ 相手の信頼スコアに反映する機能",
+  "PBL-00**: ユーザーが本を追加するときに、本の名前から、bookTemplateのrecordの中から名前が部分一致するものを提案して.",
+  "PBL-00**: ユーザーの本の一覧は、book.bookTemplateIdはunique出ないといけない.同じ本を2本以上持てないようにする"
+  "PBL-00**: 本のテンプレート一覧で、本の「読みたい」ボタンを追加して,読みたいリストに追加出来るようにして.",
   "PBL-0032: 管理画面の設定をして",
   "PBL-0033: 本の交換履歴と実績バッジ機能を追加",
   "PBL-0034: プレミアムプラン（例：交換数無制限、特典）を導入",
@@ -81,7 +84,7 @@ let productBackLogB = [
 ]
 
 <!-- 常に今のタスクをここに書いて -->
-let currentProductBackLogBItem = "進行中: PBL-0010 - 本に星で評価をつけれるようにする  (最終タスク)"
+let currentProductBackLogBItem = "完了: PBL-0031 - 交換直後レビュー機能、次は PBL-0032 - 管理画面の設定"
 
 <!-- 変更しない -->
 let doneProductBackLogA = [
@@ -96,8 +99,16 @@ let doneProductBackLogA = [
   "PBL-0009: 他のユーザーからいいねがつくと、チャットが始まって、本の交換ができるような交渉が始まるようにしたい - 2025-06-20 完了: Like→自動Chat作成→交換交渉システム実装"
 ]
 
-<!-- これを変更して -->
-let doneProductBackLogB = []
+<!-- 終わった機能はこちらに移動させて. productBackLogBからは削除して-->
+let doneProductBackLogB = [
+  "PBL-0011: ISBNを入力すると自動で書誌情報を取得して登録できる機能 - 2025-06-20 完了: Google Books API統合、ISBN検索サービス、GraphQL mutation、フロントエンドUIコンポーネント（タブ切り替え式）完備、サーバーポート4001に変更",
+  "PBL-0013: ユーザーストーリーの策定 - 2025-06-20 完了: 包括的なユーザーストーリーをUSER_STORIES.mdに策定、6エピック・34ストーリー、ペルソナ・ユーザージャーニー・受け入れ基準含む",
+  "PBL-0015: ユーザーの信頼スコア機能を追加 - 2025-06-20 完了: 信頼スコアシステムを包括的に実装。Prismaスキーマ（TrustReview、TrustScoreHistory、User.trustScore）、GraphQLリゾルバー（CRUD操作、スコア自動計算）、フロントエンドUI（TrustScoreDisplay、TrustReviewForm、TrustReviewList、/user/[id]/trust専用ページ）、ユーザープロフィールページへの信頼スコア統合を完了。5段階評価、レビュー種別、自動スコア更新、履歴追跡機能を含む完全な信頼スコアシステム。",
+  "PBL-0052: すでに開発した機能で、まだその画面遷移が正しく設定されておらず, 既存の画面から到達できない場合があったので、ないようにして - 2025-06-20 完了: /bookからすべての画面に到達可能なナビゲーション体系を構築。/book/[id]ページに包括的なナビゲーションヘッダー（戻るボタン、ホーム、テンプレート、ユーザーページへの遷移）追加、/userページに全ユーザー一覧・マイプロフィールボタン追加、/user/Usersページに戻るボタンと他ページへのナビゲーション追加、/bookページから全ユーザー一覧への遷移ボタン追加、統一的なナビゲーション設計でベストプラクティスに基づく画面遷移を実現",
+  "PBL-0053: 公開されている無料のAPIを使って、ISBNと紐づいた本の情報をDBに保存できるようにしたい - 2025-06-20 完了: BookDatabaseService実装、人気書籍35冊のISBNリスト（日本の小説・技術書）、Google Books API統合、システムユーザーでの自動登録、GraphQLクエリ・ミューテーション（getBookMetadataByISBN、searchBookMetadata、getAllPrePopulatedBooks、populateBookDatabase、addBookToDatabase）、レート制限対応、エラーハンドリング完備。事前データ蓄積により高速な本検索・選択が可能。",
+  "PBL-0054: 適切な公開APIを使って本のデータを取得し、BookTemplateテーブルに大量のrecordを追加するscriptを作成してください. readmeも書いて - 2025-06-20 完了: Google Books APIを使用した包括的な本データベース構築システムを実装。3つの手法（人気ISBNリスト、カテゴリベース検索、ベストセラー検索）を組み合わせた大量データ取得、10カテゴリ×数百冊の系統的な収集、レート制限・エラーハンドリング・重複排除機能、詳細統計とリアルタイム進捗表示、設定可能なバッチ処理、包括的なREADMEドキュメント（使用方法・トラブルシューティング・パフォーマンス最適化）、テスト用クイックスクリプト。日本語書籍を中心に数千冊規模のデータベース構築が可能。",
+  "PBL-0031: 交換直後レビュー（例：スムーズでしたか？）→ 相手の信頼スコアに反映する機能 - 2025-06-20 完了: 交換レビューシステムを包括的に実装。Prismaスキーマ（ExchangeReview、ExchangeStatus）、GraphQLリゾルバー（CRUD操作、レビュー作成・更新・削除）、TrustScoreService（レビューベースの信頼スコア自動更新）、フロントエンドUI（CreateExchangeReview、ExchangeReviewList、5段階評価システム）、レビュー統計機能（平均評価、スムーズ率）を含む完全な交換レビューシステム。"
+]
 
 <!-- 変更しない -->
 let currentSprintBackLogA = [

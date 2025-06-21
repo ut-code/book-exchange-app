@@ -1,10 +1,10 @@
 services:
-  book_exchange_app:
+  book_exchange_app_beta:
     image: postgres:12
     command: ['postgres', '-c', 'log_statement=all']
     environment:
-      - POSTGRES_USER=postgres_local_username
-      - POSTGRES_PASSWORD=postgres_local_password
-      - POSTGRES_DB=book_exchange_app
+      - POSTGRES_USER=postgres_beta_user
+      - POSTGRES_PASSWORD=postgres_beta_password
+      - POSTGRES_DB=book_exchange_app_beta
     ports:
-      - '48832:5432'
+      - '48834:5432'

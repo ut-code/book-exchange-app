@@ -1,0 +1,40 @@
+query IsBookOwnedByUser($bookTemplateId: String!) {
+  isBookOwnedByUser(bookTemplateId: $bookTemplateId)
+}
+
+mutation ToggleBookOwnership($input: ToggleBookOwnershipInput!) {
+  toggleBookOwnership(input: $input) {
+    id
+    title
+    userId
+    bookTemplateId
+    condition
+    isAvailable
+    createdAt
+    bookTemplate {
+      id
+      title
+      author
+      imageUrl
+    }
+  }
+}
+
+query GetUserBookByTemplate($bookTemplateId: String!) {
+  getUserBookByTemplate(bookTemplateId: $bookTemplateId) {
+    id
+    title
+    userId
+    bookTemplateId
+    condition
+    isAvailable
+    notes
+    createdAt
+    bookTemplate {
+      id
+      title
+      author
+      imageUrl
+    }
+  }
+}

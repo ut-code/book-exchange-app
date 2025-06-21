@@ -1,0 +1,45 @@
+mutation AddToWantToRead($input: AddToWantToReadInput!) {
+  addToWantToRead(input: $input) {
+    id
+    userId
+    bookTemplateId
+    createdAt
+    bookTemplate {
+      id
+      title
+      author
+      imageUrl
+    }
+  }
+}
+
+mutation RemoveFromWantToRead($input: RemoveFromWantToReadInput!) {
+  removeFromWantToRead(input: $input)
+}
+
+query MyWantToReadList {
+  myWantToReadList {
+    id
+    userId
+    bookTemplateId
+    createdAt
+    bookTemplate {
+      id
+      isbn
+      title
+      author
+      publisher
+      publishedDate
+      pageCount
+      language
+      categories
+      imageUrl
+      infoLink
+      description
+    }
+  }
+}
+
+query IsInWantToReadList($bookTemplateId: String!) {
+  isInWantToReadList(bookTemplateId: $bookTemplateId)
+}

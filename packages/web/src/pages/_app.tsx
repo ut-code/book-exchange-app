@@ -8,7 +8,7 @@ import { themeDark } from '@/styles/theme/theme';
 import { useState } from 'react';
 
 const httpLink = new HttpLink({
-  uri: `http://localhost:4000/graphql`,
+  uri: `http://localhost:4002/graphql`,
 })
 
 const authLink = setContext(async (_, { headers }) => {
@@ -30,7 +30,10 @@ export const apolloClient = new ApolloClient({
           console.error(graphQLErrors);
         });
       }
-      if (networkError) throw new Error(`[Network error]: ${networkError}`);
+      if (networkError) {
+        console.error('[Network error]:', networkError);
+        // Don't throw error to prevent app crash, just log it
+      }
     }),
     authLink.concat(httpLink),
   ]),

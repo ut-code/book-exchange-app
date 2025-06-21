@@ -1,4 +1,4 @@
-import { Container, Typography, Box, Divider, Button } from '@mui/material';
+import { Container, Typography, Box, Divider, Button, Stack } from '@mui/material';
 import { useRouter } from 'next/router';
 import React from 'react';
 import SigninUser from '../../organisms/Signin/SigninUserContainer';
@@ -21,7 +21,7 @@ const UserPage = () => {
           disabled={!user}
           onClick={() => router.push('/book')} 
         >
-          Books
+          Home
         </Button>
       </Box>
       {!user && (
@@ -40,6 +40,42 @@ const UserPage = () => {
       )}
       {user && (
         <Box>
+          <Divider variant="middle" style={{ margin: '20px 0' }} />
+          <Box my={2}>
+            <Typography variant="h5" component="h2" gutterBottom sx={{ color: 'white', mb: 3 }}>
+              ユーザー機能
+            </Typography>
+            <Stack spacing={2} direction={{ xs: 'column', sm: 'row' }}>
+              <Button 
+                variant="outlined"
+                onClick={() => router.push('/user/Users')}
+                sx={{ 
+                  color: 'white',
+                  borderColor: 'white',
+                  '&:hover': {
+                    borderColor: 'gray',
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)'
+                  }
+                }}
+              >
+                全ユーザー一覧
+              </Button>
+              <Button 
+                variant="outlined"
+                onClick={() => router.push('/user/me')}
+                sx={{ 
+                  color: 'white',
+                  borderColor: 'white',
+                  '&:hover': {
+                    borderColor: 'gray',
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)'
+                  }
+                }}
+              >
+                マイプロフィール
+              </Button>
+            </Stack>
+          </Box>
           <Divider variant="middle" style={{ margin: '20px 0' }} />
           <Box my={2}>
             <SignoutUser/>

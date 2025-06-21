@@ -15,6 +15,29 @@ query Books {
     id
     title
     description
+    condition
+    isAvailable
+    notes
+    createdAt
+    updatedAt
+    user {
+      id
+      username
+    }
+    bookTemplate {
+      id
+      isbn
+      title
+      author
+      publisher
+      publishedDate
+      pageCount
+      language
+      categories
+      imageUrl
+      infoLink
+      description
+    }
   }
 }
 
@@ -23,6 +46,29 @@ mutation CreateBook($input: CreateBookInput!) {
     id
     title
     description
+    condition
+    isAvailable
+    notes
+    user {
+      id
+      username
+    }
+    bookTemplate {
+      id
+      isbn
+      title
+      author
+      publisher
+      publishedDate
+      pageCount
+      language
+      categories
+      imageUrl
+      infoLink
+      description
+    }
+    createdAt
+    updatedAt
   }
 }
 
@@ -31,6 +77,11 @@ mutation CreateBooks($input: [CreateBookInput!]!) {
     id
     title
     description
+    condition
+    isAvailable
+    notes
+    createdAt
+    updatedAt
   }
 }
 
@@ -39,15 +90,34 @@ mutation UpdateBook($id: String!, $input: CreateBookInput!) {
     id
     title
     description
+    condition
+    isAvailable
+    notes
+    user {
+      id
+      username
+    }
+    bookTemplate {
+      id
+      isbn
+      title
+      author
+      publisher
+      publishedDate
+      pageCount
+      language
+      categories
+      imageUrl
+      infoLink
+      description
+    }
+    createdAt
+    updatedAt
   }
 }
 
 mutation DeleteBook($id: String!) {
-  deleteBook(id: $id) {
-    id
-    title
-    description
-  }
+  deleteBook(id: $id)
 }
 
 mutation DeleteBooks($ids: [String!]!) {
@@ -55,5 +125,179 @@ mutation DeleteBooks($ids: [String!]!) {
     id
     title
     description
+  }
+}
+
+mutation CreateBookFromIsbn($input: CreateBookFromIsbnInput!) {
+  createBookFromIsbn(input: $input) {
+    id
+    title
+    description
+    condition
+    isAvailable
+    notes
+    user {
+      id
+      username
+    }
+    bookTemplate {
+      id
+      isbn
+      title
+      author
+      publisher
+      publishedDate
+      pageCount
+      language
+      categories
+      imageUrl
+      infoLink
+      description
+    }
+    createdAt
+    updatedAt
+  }
+}
+
+query GetAllBookTemplates($limit: Float) {
+  getAllBookTemplates(limit: $limit) {
+    id
+    isbn
+    title
+    author
+    publisher
+    publishedDate
+    pageCount
+    language
+    categories
+    imageUrl
+    infoLink
+    description
+    createdAt
+    updatedAt
+    books {
+      id
+      user {
+        id
+        username
+      }
+    }
+  }
+}
+
+query SearchBookTemplates($query: String!, $limit: Float) {
+  searchBookTemplates(query: $query, limit: $limit) {
+    id
+    isbn
+    title
+    author
+    publisher
+    publishedDate
+    pageCount
+    language
+    categories
+    imageUrl
+    infoLink
+    description
+    createdAt
+    updatedAt
+    books {
+      id
+      user {
+        id
+        username
+      }
+    }
+  }
+}
+
+query GetBookTemplateById($id: String!) {
+  getBookTemplateById(id: $id) {
+    id
+    isbn
+    title
+    author
+    publisher
+    publishedDate
+    pageCount
+    language
+    categories
+    imageUrl
+    infoLink
+    description
+    createdAt
+    updatedAt
+    books {
+      id
+      condition
+      isAvailable
+      notes
+      user {
+        id
+        username
+      }
+      createdAt
+    }
+  }
+}
+
+query GetBookTemplateByISBN($isbn: String!) {
+  getBookTemplateByISBN(isbn: $isbn) {
+    id
+    isbn
+    title
+    author
+    publisher
+    publishedDate
+    pageCount
+    language
+    categories
+    imageUrl
+    infoLink
+    description
+    createdAt
+    updatedAt
+    books {
+      id
+      condition
+      isAvailable
+      notes
+      user {
+        id
+        username
+      }
+      createdAt
+    }
+  }
+}
+
+mutation CreateBookFromTemplate($input: CreateBookFromTemplateInput!) {
+  createBookFromTemplate(input: $input) {
+    id
+    title
+    description
+    condition
+    isAvailable
+    notes
+    user {
+      id
+      username
+    }
+    bookTemplate {
+      id
+      isbn
+      title
+      author
+      publisher
+      publishedDate
+      pageCount
+      language
+      categories
+      imageUrl
+      infoLink
+      description
+    }
+    createdAt
+    updatedAt
   }
 }

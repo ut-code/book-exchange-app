@@ -1,0 +1,82 @@
+query GetAllBookTemplates($limit: Float) {
+  getAllBookTemplates(limit: $limit) {
+    id
+    isbn
+    title
+    author
+    publisher
+    publishedDate
+    pageCount
+    language
+    categories
+    imageUrl
+    infoLink
+    description
+    createdAt
+    updatedAt
+    books {
+      id
+      user {
+        id
+        username
+      }
+    }
+  }
+}
+
+query SearchBookTemplates($query: String!, $limit: Float) {
+  searchBookTemplates(query: $query, limit: $limit) {
+    id
+    isbn
+    title
+    author
+    publisher
+    publishedDate
+    pageCount
+    language
+    categories
+    imageUrl
+    infoLink
+    description
+    createdAt
+    updatedAt
+    books {
+      id
+      user {
+        id
+        username
+      }
+    }
+  }
+}
+
+mutation CreateBookFromTemplate($input: CreateBookFromTemplateInput!) {
+  createBookFromTemplate(input: $input) {
+    id
+    title
+    description
+    condition
+    isAvailable
+    notes
+    user {
+      id
+      username
+    }
+    bookTemplate {
+      id
+      isbn
+      title
+      author
+      publisher
+      publishedDate
+      pageCount
+      language
+      categories
+      imageUrl
+      infoLink
+      description
+    }
+    createdAt
+    updatedAt
+  }
+}

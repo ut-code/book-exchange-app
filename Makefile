@@ -56,4 +56,4 @@ clean: ## Clean build artifacts and node_modules
 	npm run clean
 
 db-init: ## Initialize database with sample data
-	psql postgresql://postgres_local_username:postgres_local_password@localhost:48832/book_exchange_app < sample_data.sql
+	psql postgresql://postgres_local_username:postgres_local_password@localhost:48833/book_exchange_app < sample_data.sql
